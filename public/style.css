@@ -1,0 +1,128 @@
+#titleContainer {
+	border-bottom: 2px solid black;
+	padding-bottom: 5px;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#titleNavigation {
+	display: inline-block;
+	width: 10%;
+	border-top: 4px solid black;
+	padding: 25px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	margin: 0;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#signIn {
+	display: inline-block;
+	position: absolute;
+	right:0;
+	width: 10%;
+	border-top: 4px solid black;
+	padding: 25px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	margin: 0;
+	text-align: right;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#userInfo {
+	display: inline-block;
+	position: absolute;
+	right:20px;
+	top: 0px;
+}
+
+#titleNavigation:hover, #signIn:hover {
+	border-top: 2px solid gray;
+}
+
+#signIn:hover {
+	margin-top: 2px;
+}
+
+#descriptionContainer {
+	padding-top: 20px;
+}
+
+#descriptionText {
+	font-size: 20px;
+}
+
+#scoreboard {
+	border-collapse: collapse;
+	width: 100%;
+	text-align: center;
+}
+
+#scoreboardRow {
+	height: 50px;
+}
+
+#scoreboardHeader {
+	border: 3px solid black;
+}
+
+#scoreboardCell {
+	border: 1px solid black;
+}
+
+h4 {
+	margin: 5px;
+}
+
+h4:hover {
+	color: gray;
+}
+
+p1 {
+	font-size: 17px;
+}
+
+#instructionContainer {
+	border-bottom: 2px solid black;
+}
+
+#origins, #rules, #BugBounty, #WhitePageOfFame {
+	border-top: 2px solid black;
+}
+
+#titleInput, #descriptionInput, #contentInput, #solutionInput {
+	width: 100%;
+}
+
+#solutionUpload {
+	margin-top: 20px;
+}
+
+#challengeSolutionInput {
+	margin-top: 10px;
+	width: 100%;
+}
+
+#challengeCheck {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+#challengeContainer {
+	border-bottom: 2px solid black;
+}

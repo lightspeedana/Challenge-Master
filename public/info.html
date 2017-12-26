@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="icon" href="icon.png">
+		<title>Challenge Master</title>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
+		<script>
+			var config = {
+    			apiKey: "AIzaSyDCEk4vF4WeVLmYIorsXZuMwvMDDLJC5xs",
+    			authDomain: "challenge-master.firebaseapp.com",
+    			databaseURL: "https://challenge-master.firebaseio.com",
+    			projectId: "challenge-master",
+    			storageBucket: "challenge-master.appspot.com",
+    			messagingSenderId: "378652612392"
+  			};
+  			firebase.initializeApp(config);
+  		</script>
+	</head>
+	<body link="black" vlink="black" alink="black">
+		<div id="titleContainer">
+			<H1 id="title">Challenge Master</H1>
+			<a href="index.html" style="text-decoration:none"><H2 id="titleNavigation">Scoreboard</H2></a>
+			<H2 id="titleNavigation">Challenges</H2>
+			<a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
+			<a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
+			<H2 id="signIn" onclick="signIn()">Sign In</H2>
+			<H1 id="userInfo"></H1></div>
+		<div id="contentNavigation">
+			<H2>Contents</H2>
+			<H4><a href="#Origins">Origins:</a></H4>
+			<H4><a href="#Rules">Rules:</a></H4>
+			<H4><a href="#BugBounty">Bug Bounty:</a></H4>
+			<H4><a href="#WhitePageOfFame">White Page of Fame:</a></H4></div>
+		<div id="origins">
+			<a name="Origins">
+			<H2>Origins:</H2>
+			<p1><a herf="https://www.joincyberdiscovery.com/">Cyber discovery</a> is a goverment endorsed program that is designed to engage school children from years 10-13 into the world of cyber defence.  It is a four stage program currently being in its first.  Due to the time between the first and second stage the <a href="https://discord.gg/8h7HU4C">Cyber Discovery Unofficial Discord</a> was created and players joined creating their own challenges and even completing some additional ones from Cyber Discovery staff.  This is why I created Challenge Master as a unified place to host these challenges and to also add to the competition by implementing a scoring system that allows points to be awarded even when the challenge host is offline.</p1></div>
+		<div id="rules">
+			<a name="Rules">
+			<H2>Rules:</H2>
+			<p1>The rules are simple DO NOT CHEAT and if you find a way to cheat report it responsibly.  Cheating in any of form will result in a ban.<br>A non exclusive list of cheating methods: 
+				<ul>
+					<li><b>Creating Multiple Accounts</b> to gain score.</li>
+					<li><b>Creating challeges that do not actually lead to the given solution.</b></li>
+					<li><b>Telling people the accepted solution</b> to a challenge, although hints are fine</li>
+				</ul>
+				<br>Points are awarded as follows:
+				<ul>
+					<li><b>10 Points</b> are awarded to the <b>first person to solve a challenge.</b></li>
+					<li><b>5 Points</b> are awarded to any user who <b>reports a security vulnerbility in the website, see info.</b> - I reserve the right to decide what counts as "a security vulnerbility"</li>
+					<li><b>2 Points</b> are awarded to users who solve a challenge but <b>are not the first to do so.</b></li>
+					<li><b>1 Point</b> is awarded a user who <b>created a challenge when it is solved for the first time.</b></li>
+					<li>I reserve the right to award and revoke score, however I will disclose when this happens</li>
+				</ul></p1></div>
+		<div id="BugBounty">
+			<a name="BugBounty">
+			<H2>Bug Bounty:</H2>
+			<p1>As seen above one way of earning points is by disclosing security flaws in the website to me.  This is to be done <b>via discord DM's</b> and you are <b>not allowed</b> to discuss the nature of the flaw until I tell you that it has been fixed.  I will decide whether your security flaw is worthy of score on a case by case basis. However, I will not award points for showing me that the site can be DDOSed so please do not do this as if I go over a traffic limit the site will shutdown.  Additonally, do not attempt to mess with the site in a manor that will effect the end users experiance.  Finally, as well as being rewarded with score your name will be put into the <b>White Page of Fame</b> where you will be regarded as a demi-god second to only the <a href="http://www.jameslyne.com/photo-large-square.jpg" style="text-decoration:none">saviour himself</a>.</p1></div>
+		<div id="WhitePageOfFame:">
+			<a name="WhitePageOfFame">
+			<H2>White Page of Fame:</H2>
+			<p1>Security Flaws Found by the Comunity: 1</p1>
+			<ul>
+				<li><H3>James Lyne</H3></li>
+				<li><H3>Aaron Carson</H3></li>
+			</ul></div>
+		<script>
+			//Does Auth Stuff
+  			firebase.auth().getRedirectResult().then(function(result) {
+  				if (result.credential) {
+    				var token = result.credential.accessToken;
+  				}
+  				var user = result.user;
+			}).catch(function(error) {
+  				var errorCode = error.code;
+  				var errorMessage = error.message;
+  				console.log(errorMessage)
+  			});
+
+  			function signIn() {
+  				var provider = new firebase.auth.GithubAuthProvider();
+  				firebase.auth().signInWithRedirect(provider);
+  			}
+  			</script>
+		</body>
+</html>

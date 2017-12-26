@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="icon" href="icon.png">
+		<title>Challenge Master</title>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
+		<script>
+			var config = {
+    			apiKey: "AIzaSyDCEk4vF4WeVLmYIorsXZuMwvMDDLJC5xs",
+    			authDomain: "challenge-master.firebaseapp.com",
+    			databaseURL: "https://challenge-master.firebaseio.com",
+    			projectId: "challenge-master",
+    			storageBucket: "challenge-master.appspot.com",
+    			messagingSenderId: "378652612392"
+  			};
+  			firebase.initializeApp(config);
+  		</script></head>
+	<body link="black" vlink="black" alink="black">
+		<div id="titleContainer">
+			<H1 id="title">Challenge Master</H1>
+			<a href="index.html" style="text-decoration:none"><H2 id="titleNavigation">Scoreboard</H2></a>
+			<H2 id="titleNavigation">Challenges</H2>
+			<a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
+			<a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
+			<H2 id="signIn" onclick="signIn()">Sign In</H2>
+			<H1 id="userInfo"></H1></div>
+		<div id="instructionContainer">
+			<H2>Upload Instructions</H2>
+			<p1>Uploading a Challenge: To upload a challenge you need to fill out the below form.  Chalenges can range in difficulty to suit all users of Cyber Discovery and NEED to be tested before they are uploaded.  Once uploaded a challenge can't be edited.
+				<ul>
+					<li>Challenge Title:  The challenge title needs to sum up the challenge in as few words as possible whilst still giving the user an idea what the challenge is about.</li>
+					<li>Challenge Description:  A small two line decsription of what the challenge is and what needs to be done.</li>
+					<li>Challenge Content: This is a longer description of the challenge which should contain links to any files needed and describe the end goal of the challenge.</li>
+					<li>Challenge Solution: The solution for the challenge that a user must find to be awarded points.  Do not use any HTML characters in the solution as answer checking will not work.</li></ul>
+					Once all this information is filled in click the submit button and carry on with your day.</p1></div>
+		<div id="uploadChallengeForm">
+			<H3>Challenge Title</H3>
+			<input id="titleInput" type="text">
+			<H3>Challenge Description</H3>
+			<input id="descriptionInput" type="text">
+			<H3>Challenge Content</H3>
+			<input id="contentInput" type="text">
+			<H3>Challenge Solution</H3>
+			<input id="solutionInput" type="text">
+			<button id="solutionUpload" onclick="upload()">Upload</button></div>
+		<script>
+			//Does Auth Stuff
+  			firebase.auth().getRedirectResult().then(function(result) {
+  				if (result.credential) {
+    				var token = result.credential.accessToken;
+  				}
+  				var user = result.user;
+			}).catch(function(error) {
+  				var errorCode = error.code;
+  				var errorMessage = error.message;
+  				console.log(errorMessage)
+  			});
+
+			function upload() {
+				const button =document.getElementById("solutionUpload");
+				button.disabled = true;
+				const title = document.getElementById("titleInput").value;
+				const description = document.getElementById("descriptionInput").value;
+				const content = document.getElementById("contentInput").value;
+				const solution = document.getElementById("solutionInput").value;
+				
+				firebase.auth().currentUser.getIdToken(true).then(function(token) {
+					var req = new XMLHttpRequest();
+					req.onload = function() {
+      					//On Load redirect to challenge page
+      					if (req.status == 200) {
+      						//Success Redirect
+      						alert("You will be redirected to your challenge page, if the the text from your challenge doesn't load refresh the page");
+      						document.location.href = "challenge.html?cid=" + req.responseText;
+      					}else {
+      						//Error
+      						alert("Error: Make Sure the entire form is filled out and try again.")
+      						button.disabled = false;
+      					}
+      					console.log(req.status);
+
+    				}.bind(this);
+
+    				req.open('POST', "https://us-central1-challenge-master.cloudfunctions.net/uploadChallenge");
+    				req.setRequestHeader('Authorization', 'Bearer ' + token);
+    				req.setRequestHeader('Content-Type', 'application/json');
+					var json = '{"challengeTitle":"'+title+'","challengeDescription":"'+description+'","challengeContent":"'+content+'","challengeSolution":"'+solution+'"}';
+    				req.send(json);
+				});
+			}
+
+  			function signIn() {
+  				var provider = new firebase.auth.GithubAuthProvider();
+  				firebase.auth().signInWithRedirect(provider);
+  			}
+  			</script>
+		</body>
+</html>
