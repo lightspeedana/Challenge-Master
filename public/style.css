@@ -8,12 +8,39 @@
     -ms-user-select: none;
     user-select: none;
 }
+#footerContainer {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 #titleNavigation {
 	display: inline-block;
 	width: 10%;
 	border-top: 4px solid black;
 	padding: 25px;
+	padding-top: 5px;
+	padding-bottom: 0px;
+	margin: 0;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#footerNavigation {
+	display: inline-block;
+	width: 20%;
+	border-bottom: 4px solid black;
+	padding: 25px;	
 	padding-top: 5px;
 	padding-bottom: 0px;
 	margin: 0;
@@ -51,8 +78,13 @@
 	top: 0px;
 }
 
-#titleNavigation:hover, #signIn:hover {
+#titleNavigation:hover, #signIn:hover  {
 	border-top: 2px solid gray;
+}
+	
+
+#footerNavigation:hover{
+	border-bottom: 2px solid gray;
 }
 
 #signIn:hover {
@@ -101,8 +133,12 @@ p1 {
 	border-bottom: 2px solid black;
 }
 
-#origins, #rules, #BugBounty, #WhitePageOfFame {
+#origins, #rules, #BugBounty {
 	border-top: 2px solid black;
+}
+
+#WhitePageOfFame {
+	border-bottom: 2px solid black;
 }
 
 #titleInput, #descriptionInput, #contentInput, #solutionInput {
