@@ -8,16 +8,18 @@
     -ms-user-select: none;
     user-select: none;
 }
+
 #footerContainer {
 	padding-top: 5px;
 	padding-bottom: 5px;
 	text-align: center;
 	-webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border-top: 2px solid black;
 }
 
 #titleNavigation {
@@ -38,18 +40,22 @@
 
 #footerNavigation {
 	display: inline-block;
-	width: 20%;
-	border-bottom: 4px solid black;
-	padding: 25px;	
-	padding-top: 5px;
-	padding-bottom: 0px;
+  	width: 20%;
+ 	border-bottom: 4px solid black;
+ 	padding: 25px;	
+ 	padding-top: 5px;
+ 	padding-bottom: 0px;
 	margin: 0;
-	-webkit-touch-callout: none;
+ 	-webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+#footerNavigation:hover{
+	border-bottom: 2px solid gray;
 }
 
 #signIn {
@@ -74,17 +80,12 @@
 #userInfo {
 	display: inline-block;
 	position: absolute;
-	right:20px;
+	right:10px;
 	top: 0px;
 }
 
-#titleNavigation:hover, #signIn:hover  {
+#titleNavigation:hover, #signIn:hover {
 	border-top: 2px solid gray;
-}
-	
-
-#footerNavigation:hover{
-	border-bottom: 2px solid gray;
 }
 
 #signIn:hover {
@@ -106,7 +107,7 @@
 }
 
 #scoreboardRow {
-	height: 50px;
+	height: 48px;
 }
 
 #scoreboardHeader {
@@ -133,12 +134,8 @@ p1 {
 	border-bottom: 2px solid black;
 }
 
-#origins, #rules, #BugBounty {
+#origins, #rules, #BugBounty, #WhitePageOfFame {
 	border-top: 2px solid black;
-}
-
-#WhitePageOfFame {
-	border-bottom: 2px solid black;
 }
 
 #titleInput, #descriptionInput, #contentInput, #solutionInput {
@@ -162,3 +159,6 @@ p1 {
 #challengeContainer {
 	border-bottom: 2px solid black;
 }
+
+#solvesContainer {
+	padding-bottom: 500px;

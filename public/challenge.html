@@ -28,7 +28,7 @@
       <a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
       <a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
       <H2 id="signIn" onclick="signIn()">Sign In</H2>
-      <H1 id="userInfo"></H1></div>
+      <H3 id="userInfo"></H3></div>
 		<div id="challengeContainer">
 			<H2 id="challengeTitle">Challenge Title</H2>
 			<H3 id="challengeDescription">This is where the challenge description goes</H3>
@@ -38,7 +38,13 @@
 		<div id="solvesContainer">
 			<H2 id="solvedBy"> Solved By 0 People:</H2>
 			<p1></p1></div>
-		<script>
+		<footer id="footerContainer">
+        <a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Discord</H2></a>
+        <a href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">GitHub</H2></a>
+        <a href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Official Twitter</H2></a>
+        <a href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Cyber Discovery</H2></a><br><br>
+        <a href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><b><p1>Copyright (c) 2017 Daniel</p1></b></a></footer>
+    <script>
 			//Does Auth Stuff
   			firebase.auth().getRedirectResult().then(function(result) {
   				if (result.credential) {
@@ -52,6 +58,7 @@
   			});
 
 			loadChallenge();
+      setUserData();
 
 			function loadChallenge() {
 				//Get Challenge ID
@@ -114,6 +121,28 @@
   				var provider = new firebase.auth.GithubAuthProvider();
   				firebase.auth().signInWithRedirect(provider);
   			}
+
+        function setUserData() {
+        //Displays User Info
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              // User is signed in.
+              var uid = user.uid;
+              console.log(uid);
+              var database = firebase.database();
+              database.ref("/users/" + uid).once("value").then((snapshot) => {
+                var name = snapshot.val().name;
+                var score = snapshot.val().score;
+                var display = name + " - " + score;
+                console.log(display);
+              document.getElementById("userInfo").innerHTML = display;
+              return display;
+              });
+          } else {
+              // No user is signed in.
+            }
+        });   
+      }
   			</script>
 		</body>
 </html>
