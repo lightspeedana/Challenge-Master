@@ -8,14 +8,18 @@ admin.initializeApp(functions.config().firebase);
 exports.initUser = functions.auth.user().onCreate(event => {
 	//Adds the Player To Users Database and Scores Database
 	const user = event.data;
-	const uid = user.uid;
-	const score = 0;
-  console.log(user.displayName);
-	const name = validator.escape(String(user.displayName));
-	admin.database().ref('users/' + uid).set({
-    name : name,
-    score : score
-  });
+  const uid = user.uid;
+  const score = 0;
+  admin.database().ref('users/' + uid).child('score').set(score);
+	
+  var name = "";
+  if(user.displayName === undefined) {
+    name = uid;
+  } else {
+    name = validator.escape(user.displayName);
+  }
+	
+	admin.database().ref('users/' + uid).child('name').set(name);
   admin.database().ref('scores').child(uid).set(score);
   return true;
 });
@@ -31,6 +35,7 @@ exports.checkSolution = functions.https.onRequest((req, res) => {
   //Checks if a solution is correct and awards points
   cors(req, res, () => {
     validateFirebaseIdToken(req, res, checkSolution);
+    return true;
   });
 });
 
@@ -73,13 +78,48 @@ function checkSolution(req, res) {
   var challengeID = req.headers.challenge;
 
   //Gets Solution
-  var database = admin.database().ref('solutions/').child(challengeID).once("value").then((snapshot) => {
-    var solution = snapshot.val();
-    if(String(solution).equals(String(attempt))) {
+  admin.database().ref('solutions/').child(challengeID).once("value").then((ssnapshot) => {
+    var solution = ssnapshot.val();
+    if(solution === attempt) {
       //User Is Correct
-      res.status(200).send("Correct You Will Recieve Your Points Shortly")
-      //Award Score if has not solved this challenge before
+      admin.database().ref('challenges/').child(challengeID).once("value").then((csnapshot) => {
+        if(csnapshot.val().challengeCreator === req.user.uid) {
+          res.status(200).send("You Can't Solve Your Own Challenge");
+        }else {
+          if(csnapshot.val().challengeSolved === 0) {
+            //First Person
+            //Add To Solved List
+            admin.database().ref('challenges/' + challengeID).child("challengeSolved").set(csnapshot.val().challengeSolved + 1);
+            admin.database().ref('challenges/' + challengeID + '/challengeSolvers').child(req.user.uid).set(csnapshot.val().challengeSolved + 1);
+            admin.database().ref('users/' + req.user.uid + '/solves').child(challengeID).set(10);
+            //Award Score
+            awardScore(req.user.uid, 10);
+            res.status(200).send("Correct You Will Recieve Your Points Shortly");
+            //Award Score To Creator
 
+          }else {
+            //Not First Person
+            //Check If UID Solved it before
+            admin.database().ref('users/' + req.user.uid + '/solves').once('value').then((usnapshot) => {
+              var hasSolved = false;
+              usnapshot.forEach(function(childSnapshot) {
+                if (childSnapshot.key === challengeID) {
+                  hasSolved = true;
+                }
+              });
+              if (hasSolved === false) {
+                admin.database().ref('challenges/' + challengeID).child("challengeSolved").set(csnapshot.val().challengeSolved + 1);
+                admin.database().ref('challenges/' + challengeID + '/challengeSolvers').child(req.user.uid).set(csnapshot.val().challengeSolved + 1);
+                admin.database().ref('users/' + req.user.uid + '/solves').child(challengeID).set(2);
+                awardScore(req.user.uid, 2);
+                res.status(200).send("Correct You Will Recieve Your Points Shortly");
+              }else {
+                res.status(200).send("You Have Already Solved This Challenge");
+              }
+            });
+          }
+        }
+      });  
     }else {
       res.status(200).send("Incorrect - Please do not guess");
     }
@@ -89,12 +129,15 @@ function checkSolution(req, res) {
 }
 
 function awardScore(uid, amount) {
-  //Get Currnt Score
   var database = admin.database().ref('scores/').child(uid).once("value").then((snapshot) => {
-    var solution = snapshot.val();
+    //Get Currnt Score
+    var score = snapshot.val();
+    //Add amount to score
+    var newScore = score + amount;
+    //Write Score
+    admin.database().ref('scores').child(uid).set(newScore);
+    admin.database().ref('users/' + uid).child("score").set(newScore);
   });
-  //Add amount to score
-  //Write Score
 }
 
 const validateFirebaseIdToken = (req, res, next) => {

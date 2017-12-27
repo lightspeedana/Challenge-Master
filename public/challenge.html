@@ -22,13 +22,13 @@
 	</head>
 	<body link="black" vlink="black" alink="black">
 		<div id="titleContainer">
-			<H1 id="title">Challenge Master</H1>
-			<a href="index.html" style="text-decoration:none"><H2 id="titleNavigation">Scoreboard</H2></a>
-			<H2 id="titleNavigation">Challenges</H2>
-			<a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
-			<a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
-			<H2 id="signIn" onclick="signIn()">Sign In</H2>
-			<H1 id="userInfo"></H1></div>
+      <H1 id="title">Challenge Master</H1>
+      <a href="index.html" style="text-decoration:none"><H2 id="titleNavigation">Scoreboard</H2></a>
+      <a href="browse.html" style="text-decoration:none"><H2 id="titleNavigation">Challenges</H2></a>
+      <a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
+      <a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
+      <H2 id="signIn" onclick="signIn()">Sign In</H2>
+      <H1 id="userInfo"></H1></div>
 		<div id="challengeContainer">
 			<H2 id="challengeTitle">Challenge Title</H2>
 			<H3 id="challengeDescription">This is where the challenge description goes</H3>
@@ -36,7 +36,7 @@
 			<input id="challengeSolutionInput" type="text">
 			<button id="challengeCheck" onclick="check()">Check</button></div>
 		<div id="solvesContainer">
-			<H2> Solved By 0 People:</H2>
+			<H2 id="solvedBy"> Solved By 0 People:</H2>
 			<p1></p1></div>
 		<script>
 			//Does Auth Stuff
@@ -63,25 +63,42 @@
 				var database = firebase.database();
 				return database.ref("/challenges/" + challengeId).once("value").then((snapshot) => {
 					//Display Challenge Data
-  					//Title
-  					var title = snapshot.val().challengeTitle;
-  					document.getElementById("challengeTitle").innerHTML = title;
-  					//Decsription
-  					var description = snapshot.val().challengeDescription;
-  					document.getElementById("challengeDescription").innerHTML = description;
-  					//Content
-  					var content = snapshot.val().challengeContent;
-  					document.getElementById("challengeContent").innerHTML = content;
-  					//Solved
-  					var solved = snapshot.val().challengeSolved;
-  					document.getElementById("challengeTitle").innerHTML = "Solved by " + solved + " people:";
+  				//Title
+  				var title = snapshot.val().challengeTitle;
+  				document.getElementById("challengeTitle").innerHTML = title;
+  				//Decsription
+  				var description = snapshot.val().challengeDescription;
+  				document.getElementById("challengeDescription").innerHTML = description;
+  				//Content
+  				var content = snapshot.val().challengeContent;
+  				document.getElementById("challengeContent").innerHTML = content;
+  				//Solved
+  				var solved = snapshot.val().challengeSolved;
+  				document.getElementById("solvedBy").innerHTML = "Solved by " + solved + " people:";
   					
-  					//People Who Solved Names
-  					if (solved != 0) {
+  				//People Who Solved Names
+  				if (solved != 0) {
   						
-  					}
-      			});
+  				}
+      	});
 			}
+
+      function check() {
+        firebase.auth().currentUser.getIdToken(true).then(function(token) {
+          document.getElementById("challengeCheck").disabled = true;
+          var req = new XMLHttpRequest();
+          req.open('GET', "https://us-central1-challenge-master.cloudfunctions.net/checkSolution");
+          req.onload = function() {
+            //On Load redirect to challenge page
+            alert(req.response);
+            document.getElementById("challengeCheck").disabled = false;
+          }.bind(this);
+          req.setRequestHeader('Authorization', 'Bearer ' + token);
+          req.setRequestHeader('Challenge', getParameterByName("cid"));
+          req.setRequestHeader('Attempt', document.getElementById("challengeSolutionInput").value);
+          req.send();
+        });    
+      }
 
 			function getParameterByName(name, url) {
     		if (!url) url = window.location.href;
