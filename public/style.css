@@ -78,8 +78,13 @@
 	top: 0px;
 }
 
-#titleNavigation:hover, #signIn:hover {
+#titleNavigation:hover, #signIn:hover  {
 	border-top: 2px solid gray;
+}
+	
+
+#footerNavigation:hover{
+	border-bottom: 2px solid gray;
 }
 
 #signIn:hover {
