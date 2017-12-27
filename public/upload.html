@@ -47,7 +47,7 @@
 			<H3>Challenge Solution</H3>
 			<input id="solutionInput" type="text">
 			<button id="solutionUpload" onclick="upload()">Upload</button></div>
-		<div id="footerContainer">
+		<div id="footerContainer" style="position: absolute; bottom: 0; width: 100%; margin: 0 auto;">
  				<a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Discord</H2></a>
  				<a href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">GitHub</H2></a>
 				<a href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Official Twitter</H2></a>
@@ -75,7 +75,7 @@
 				const description = document.getElementById("descriptionInput").value;
 				const content = document.getElementById("contentInput").value;
 				const solution = document.getElementById("solutionInput").value;
-				
+
 				firebase.auth().currentUser.getIdToken(true).then(function(token) {
 					var req = new XMLHttpRequest();
 					req.onload = function() {
@@ -125,7 +125,7 @@
  					} else {
     					// No user is signed in.
   					}
-				});		
+				});
 			}
   			</script>
 		</body>
