@@ -21,13 +21,23 @@ exports.initUser = functions.auth.user().onCreate(event => {
 	
 	admin.database().ref('users/' + uid).child('name').set(name);
   admin.database().ref('scores').child(uid).set(score);
+  console.log("Created User: " + name);
   return true;
+});
+
+exports.updateUser = functions.https.onRequest((req, res) => {
+  //Edits The Users Display Name
+  cors(req, res, () => {
+    validateFirebaseIdToken(req, res, updateUser);
+    return true;
+  });
 });
 
 exports.uploadChallenge = functions.https.onRequest((req, res) => {
 	//Uploads a Challenge form an Authed User
 	cors(req, res, () => {
 		validateFirebaseIdToken(req, res, createChallenge);
+    return true;
   });
 });
 
@@ -40,6 +50,18 @@ exports.checkSolution = functions.https.onRequest((req, res) => {
 });
 
 //Functions
+function updateUser(req, res) {
+  var name = validator.escape(req.headers.name);
+  if (name.length < 37) {
+    admin.database().ref('users/' + req.user.uid).child("name").set(name);
+    console.log("Updated Name: " + validator.escape(req.headers.name));
+    res.status(200).send("Your Name Has Been Changed");
+  } else {
+    res.status(403).send("Invalid Request");
+  }
+  
+}
+
 function createChallenge(req, res) {
   var title = validator.escape(req.body.challengeTitle + '');
   var description = validator.escape(req.body.challengeDescription + '');
@@ -67,6 +89,11 @@ function createChallenge(req, res) {
   database.child(challengeID).set(challengeData);
   database = admin.database().ref('solutions');
   database.child(challengeID).set(solution);
+
+  database = admin.database().ref('users/' + uid + '/created');
+  var key = database.push().key;
+  database.child(key).set(challengeID);
+
   console.log("Uploaded Challenge : " + challengeID);
   res.status(200).send(challengeID);
   return true;
@@ -76,7 +103,7 @@ function checkSolution(req, res) {
   //Gets Attempt and Token ID
   var attempt = req.headers.attempt;
   var challengeID = req.headers.challenge;
-
+  console.log("Checked: " + attempt + " for " + challengeID); 
   //Gets Solution
   admin.database().ref('solutions/').child(challengeID).once("value").then((ssnapshot) => {
     var solution = ssnapshot.val();
@@ -96,7 +123,7 @@ function checkSolution(req, res) {
             awardScore(req.user.uid, 10);
             res.status(200).send("Correct You Will Recieve Your Points Shortly");
             //Award Score To Creator
-
+            awardScore(csnapshot.val().challengeCreator, 1);
           }else {
             //Not First Person
             //Check If UID Solved it before
