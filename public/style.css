@@ -24,7 +24,7 @@
 
 #titleNavigation {
 	display: inline-block;
-	width: 10%;
+	width: 11%;
 	border-top: 4px solid black;
 	padding: 25px;
 	padding-top: 5px;
@@ -40,7 +40,7 @@
 
 #footerNavigation {
 	display: inline-block;
-  	width: 20%;
+  	width: 15%;
  	border-bottom: 4px solid black;
  	padding: 25px;	
  	padding-top: 5px;
@@ -118,14 +118,6 @@
 	border: 1px solid black;
 }
 
-h4 {
-	margin: 5px;
-}
-
-h4:hover {
-	color: gray;
-}
-
 p1 {
 	font-size: 17px;
 }
@@ -142,8 +134,16 @@ p1 {
 	width: 100%;
 }
 
+#userNameChange {
+	margin-bottom: 20px;
+}
+
 #solutionUpload {
 	margin-top: 20px;
+}
+
+#uploadChallengeForm {
+	margin-bottom: 20px;
 }
 
 #challengeSolutionInput {
@@ -161,4 +161,10 @@ p1 {
 }
 
 #solvesContainer {
-	padding-bottom: 500px;
+	padding-bottom: 20px;
+}
+
+#challengeFilter {
+	width: 10%;
+	margin-bottom: 10px;
+}

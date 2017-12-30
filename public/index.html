@@ -27,7 +27,7 @@
 			<a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
 			<a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
 			<H2 id="signIn" onclick="signIn()">Sign In</H2>
-			<H3 id="userInfo"></H3></div>
+			<H3 id="userInfo" onclick="viewProfile()"></H3></div>
 		<div id="descriptionContainer">
 			<p1 id="descriptionText">The Scoreboard below shows the scores of the top ten players - who have solved the most challenges the quickest.<br><br><b>Points are awarded as follows:</b><br>
 			<ul>
@@ -97,12 +97,12 @@
 					<td id="scoreboardCell"></td>
 				</tr></table>
 			</div>
-		<div id="footerContainer">
+		<div id="footerContainer" style="border-top:0px;">
  				<a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Discord</H2></a>
  				<a href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">GitHub</H2></a>
 				<a href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Official Twitter</H2></a>
  				<a href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Cyber Discovery</H2></a><br><br>
- 				<a href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><b><p1>Copyright (c) 2017 Daniel</p1></b></a></div>
+ 				<a href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div>
 		<script>
 			//Does Auth Stuff
   			firebase.auth().getRedirectResult().then(function(result) {
@@ -119,9 +119,21 @@
 			//Inits Page
 			loadTopUsers();
 
+			function viewProfile() {
+				document.location.href = "user.html?uid=" + firebase.auth().currentUser.uid;
+			}
+
   			function signIn() {
-  				var provider = new firebase.auth.GithubAuthProvider();
-  				firebase.auth().signInWithRedirect(provider);
+  				var display = document.getElementById("signIn").innerHTML;
+  				if (display === "Sign Out") {
+  					//Sign Out
+  					firebase.auth().signOut();
+  					document.getElementById("signIn").innerHTML = "Sign In";
+  				}else {
+  					//Sign In
+  					var provider = new firebase.auth.GithubAuthProvider();
+  					firebase.auth().signInWithRedirect(provider);
+  				}	
   			}
 
   			function setUserData() {
@@ -130,18 +142,18 @@
   					if (user) {
     					// User is signed in.
     					var uid = user.uid;
-  						console.log(uid);
   						var database = firebase.database();
   						database.ref("/users/" + uid).once("value").then((snapshot) => {
   							var name = snapshot.val().name;
     						var score = snapshot.val().score;
     						var display = name + " - " + score;
-    						console.log(display);
 							document.getElementById("userInfo").innerHTML = display;
+							document.getElementById("signIn").innerHTML = "Sign Out";
 							return display;
   						});
  					} else {
     					// No user is signed in.
+    					document.getElementById("userInfo").innerHTML = "";
   					}
 				});		
 			}

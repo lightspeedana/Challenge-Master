@@ -28,7 +28,7 @@
       <a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
       <a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
       <H2 id="signIn" onclick="signIn()">Sign In</H2>
-      <H3 id="userInfo"></H3></div>
+      <H3 id="userInfo" onclick="viewProfile()"></H3></div>
 		<div id="challengeContainer">
 			<H2 id="challengeTitle">Challenge Title</H2>
 			<H3 id="challengeDescription">This is where the challenge description goes</H3>
@@ -37,25 +37,25 @@
 			<button id="challengeCheck" onclick="check()">Check</button></div>
 		<div id="solvesContainer">
 			<H2 id="solvedBy"> Solved By 0 People:</H2>
-			<p1></p1></div>
-		<footer id="footerContainer">
+			<p1 id="solvers"></p1></div>
+		<div id="footerContainer" style="border-top:2px solid black;">
         <a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Discord</H2></a>
         <a href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">GitHub</H2></a>
         <a href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Official Twitter</H2></a>
         <a href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Cyber Discovery</H2></a><br><br>
-        <a href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><b><p1>Copyright (c) 2017 Daniel</p1></b></a></footer>
+        <a href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div>
     <script>
 			//Does Auth Stuff
-  			firebase.auth().getRedirectResult().then(function(result) {
-  				if (result.credential) {
-    				var token = result.credential.accessToken;
-  				}
-  				var user = result.user;
+  		firebase.auth().getRedirectResult().then(function(result) {
+  			if (result.credential) {
+    			var token = result.credential.accessToken;
+  			}
+  			var user = result.user;
 			}).catch(function(error) {
-  				var errorCode = error.code;
-  				var errorMessage = error.message;
-  				console.log(errorMessage)
-  			});
+  			var errorCode = error.code;
+  			var errorMessage = error.message;
+  			console.log(errorMessage)
+  		});
 
 			loadChallenge();
       setUserData();
@@ -63,9 +63,9 @@
 			function loadChallenge() {
 				//Get Challenge ID
 				var challengeId = getParameterByName('cid');
-        if (challengeId == null) {
-          document.location.href = "index.html";
-        }
+				if (challengeId == null) {
+					document.location.href = "index.html";
+				}
 				//Get Challenge Data
 				var database = firebase.database();
 				return database.ref("/challenges/" + challengeId).once("value").then((snapshot) => {
@@ -85,7 +85,14 @@
   					
   				//People Who Solved Names
   				if (solved != 0) {
-  						
+            database.ref("/challenges/" + challengeId + "/challengeSolvers").orderByValue().once("value").then((solversSnapshot) => {
+              solversSnapshot.forEach(function(childSnapshot) {
+                var solvers = document.getElementById("solvers");
+                database.ref("/users/" + childSnapshot.key).once("value").then((nameSnapshot) => {
+                  solvers.innerHTML = solvers.innerHTML + childSnapshot.val() + " - " + nameSnapshot.val().name + "<br>";
+                });
+              });
+            });
   				}
       	});
 			}
@@ -117,32 +124,44 @@
     		return decodeURIComponent(results[2].replace(/\+/g, " "));
 			}
 
-  			function signIn() {
-  				var provider = new firebase.auth.GithubAuthProvider();
-  				firebase.auth().signInWithRedirect(provider);
-  			}
+      function viewProfile() {
+        document.location.href = "user.html?uid=" + firebase.auth().currentUser.uid;
+      }
 
-        function setUserData() {
+  		function signIn() {
+        var display = document.getElementById("signIn").innerHTML;
+        if (display === "Sign Out") {
+          //Sign Out
+          firebase.auth().signOut();
+          document.getElementById("signIn").innerHTML = "Sign In";
+        }else {
+          //Sign In
+          var provider = new firebase.auth.GithubAuthProvider();
+          firebase.auth().signInWithRedirect(provider);
+        } 
+      }
+
+      function setUserData() {
         //Displays User Info
         firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-              // User is signed in.
-              var uid = user.uid;
-              console.log(uid);
-              var database = firebase.database();
-              database.ref("/users/" + uid).once("value").then((snapshot) => {
-                var name = snapshot.val().name;
-                var score = snapshot.val().score;
-                var display = name + " - " + score;
-                console.log(display);
+          if (user) {
+            // User is signed in.
+            var uid = user.uid;
+            var database = firebase.database();
+            database.ref("/users/" + uid).once("value").then((snapshot) => {
+              var name = snapshot.val().name;
+              var score = snapshot.val().score;
+              var display = name + " - " + score;
               document.getElementById("userInfo").innerHTML = display;
+              document.getElementById("signIn").innerHTML = "Sign Out";
               return display;
-              });
+            });
           } else {
-              // No user is signed in.
-            }
+            // No user is signed in.
+            document.getElementById("userInfo").innerHTML = "";
+          }
         });   
       }
-  			</script>
-		</body>
+  	</script>
+	</body>
 </html>
