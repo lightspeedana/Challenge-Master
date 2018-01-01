@@ -29,15 +29,15 @@
 			<H2 id="signIn" onclick="signIn()">Sign In</H2></div>
 			<H3 id="userInfo" onclick="viewProfile()"></H3></div>
 		<div id="instructionContainer">
-			<H2>Upload Instructions</H2>
-			<p1>Uploading a Challenge: To upload a challenge you need to fill out the below form.  Chalenges can range in difficulty to suit all users of Cyber Discovery and NEED to be tested before they are uploaded.  Once uploaded a challenge can't be edited.
+			<H2>Edit Instructions</H2>
+			<p1>Editing a Challenge: To edit a challenge you need to fill out the below form.  
 				<ul>
 					<li>Challenge Title:  The challenge title needs to sum up the challenge in as few words as possible whilst still giving the user an idea what the challenge is about.</li>
 					<li>Challenge Description:  A small two line decsription of what the challenge is and what needs to be done.</li>
 					<li>Challenge Content: This is a longer description of the challenge which should contain links to any files needed and describe the end goal of the challenge.</li>
-					<li>Challenge Solution: The solution for the challenge that a user must find to be awarded points.  Do not use any HTML characters in the solution as answer checking will not work.</li></ul>
-					Once all this information is filled in click the submit button and carry on with your day.</p1></div>
-		<div id="uploadChallengeForm">
+					<li>Challenge Solution: The solution for the challenge that a user must find to be awarded points.  Do not use any HTML characters in the solution as answer checking may not work.  The solution can't be changed once the challenge has been solved once.</li></ul>
+					Once all this information is filled in click the edit button and carry on with your day.</p1></div>
+		<div id="editChallengeForm">
 			<H3>Challenge Title</H3>
 			<input id="titleInput" type="text">
 			<H3>Challenge Description</H3>
@@ -46,7 +46,7 @@
 			<textarea id="contentInput" rows="3"></textarea>
 			<H3>Challenge Solution</H3>
 			<input id="solutionInput" type="text">
-			<button id="solutionUpload" onclick="upload()">Upload</button></div>
+			<button id="editChallenge" onclick="edit()">Edit</button></div>
 		<div id="footerContainer" style="border-top:2px solid black;">
  				<a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Discord</H2></a>
  				<a href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">GitHub</H2></a>
@@ -67,15 +67,16 @@
   			});
 
 			setUserData();
+			loadCurrentChallenge();
 
-			function upload() {
-				const button =document.getElementById("solutionUpload");
+			function edit() {
+				const button = document.getElementById("editChallenge");
 				button.disabled = true;
 				const title = document.getElementById("titleInput").value;
 				const description = document.getElementById("descriptionInput").value;
 				const content = document.getElementById("contentInput").value;
 				const solution = document.getElementById("solutionInput").value;
-				
+
 				firebase.auth().currentUser.getIdToken(true).then(function(token) {
 					var req = new XMLHttpRequest();
 					req.onload = function() {
@@ -91,13 +92,44 @@
       					}
       					console.log(req.status);
     				}.bind(this);
-    				req.open('POST', "https://us-central1-challenge-master.cloudfunctions.net/uploadChallenge");
+    				req.open('POST', "https://us-central1-challenge-master.cloudfunctions.net/editChallenge");
     				req.setRequestHeader('Authorization', 'Bearer ' + token);
     				req.setRequestHeader('Content-Type', 'application/json');
+    				req.setRequestHeader('cid', getParameterByName("cid"));
 					var rawJson = {"challengeTitle":title, "challengeDescription":description, "challengeContent":content, "challengeSolution":solution};
 					var json = JSON.stringify(rawJson);
     				req.send(json);
 				});
+			}
+
+			function loadCurrentChallenge() {
+				var cid = getParameterByName("cid");
+				if (cid == null) {
+					document.location.href = "index.html";
+				}
+				var database = firebase.database();
+				database.ref('/challenges/' + cid).once("value").then((currentChallengeSnapshot) => {
+					var data = currentChallengeSnapshot.val();
+					document.getElementById('titleInput').value = data.challengeTitle;
+					document.getElementById('descriptionInput').innerHTML = data.challengeDescription;
+					document.getElementById('contentInput').innerHTML = data.challengeContent;
+
+					if (data.challengeSolved != 0) {
+						solutionInput = document.getElementById('solutionInput');
+						solutionInput.disabled = true;
+						solutionInput.value = "Challenge Has Been Solved So the Solution Can't Be Changed";
+					}
+				});
+			} 
+
+			function getParameterByName(name, url) {
+	    		if (!url) url = window.location.href;
+	    			name = name.replace(/[\[\]]/g, "\\$&");
+	    			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	        		results = regex.exec(url);
+	    		if (!results) return null;
+	    		if (!results[2]) return '';
+	    		return decodeURIComponent(results[2].replace(/\+/g, " "));
 			}
 
 			function viewProfile() {

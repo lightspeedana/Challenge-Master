@@ -138,11 +138,11 @@ p1 {
 	margin-bottom: 20px;
 }
 
-#solutionUpload {
+#solutionUpload, #editChallenge {
 	margin-top: 20px;
 }
 
-#uploadChallengeForm {
+#uploadChallengeForm, #editChallengeForm {
 	margin-bottom: 20px;
 }
 

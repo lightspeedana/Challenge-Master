@@ -66,14 +66,16 @@
               var filterType = filter.options[filter.selectedIndex].value;
               var container = document.getElementById("challenges");
               var user = firebase.auth().currentUser;
-              if(user === undefined || filterType === "all") {
+              if(user === null || filterType === "all") {
                 //Loops Through Creating HTML
                 var title = challengeSnapshot.val().challengeTitle;
                 var description = challengeSnapshot.val().challengeDescription;
                 var solves = challengeSnapshot.val().challengeSolved;
-                //Adds HTML to challenges.innerHTML
-                var html = "<div style=\"border-bottom: 2px solid black;\"><a href=\"challenge.html?cid=" + challengeSnapshot.key + "\"><H2>" + title + "</H2></a><H3>" + description + "</H3><p3>Solved " + solves + " Times</p3></div>";
-                container.innerHTML = container.innerHTML + html;
+                database.ref("/users/" + challengeSnapshot.val().challengeCreator + "/name").once("value").then((userSnapshot) => {
+                  //Adds HTML to challenges.innerHTML
+                  var html = "<div style=\"border-bottom: 2px solid black;\"><a href=\"challenge.html?cid=" + challengeSnapshot.key + "\"><H2>" + title + "</H2></a><H3>" + description + "</H3><p3>Created By<b> " + userSnapshot.val() + "</b>, Solved " + solves + " Times</p3></div>";
+                  container.innerHTML = container.innerHTML + html;
+                });
               }else {
                 //Only Show Unsolved
                 var show = true;
@@ -89,9 +91,11 @@
                     var title = challengeSnapshot.val().challengeTitle;
                     var description = challengeSnapshot.val().challengeDescription;
                     var solves = challengeSnapshot.val().challengeSolved;
-                    //Adds HTML to challenges.innerHTML
-                    var html = "<div style=\"border-bottom: 2px solid black;\"><a href=\"challenge.html?cid=" + challengeSnapshot.key + "\"><H2>" + title + "</H2></a><H3>" + description + "</H3><p3>Solved " + solves + " Times</p3></div>";
-                    container.innerHTML = container.innerHTML + html;
+                    database.ref("/users/" + challengeSnapshot.val().challengeCreator + "/name").once("value").then((userSnapshot) => {
+                      //Adds HTML to challenges.innerHTML
+                      var html = "<div style=\"border-bottom: 2px solid black;\"><a href=\"challenge.html?cid=" + challengeSnapshot.key + "\"><H2>" + title + "</H2></a><H3>" + description + "</H3><p3>Created By<b> " + userSnapshot.val() + "</b>, Solved " + solves + " Times</p3></div>";
+                      container.innerHTML = container.innerHTML + html;
+                    });
                   }
                 });
               }

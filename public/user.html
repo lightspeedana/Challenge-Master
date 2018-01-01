@@ -85,8 +85,10 @@
 			              	var description = challengeSnapshot.val().challengeDescription;
 			              	var solves = challengeSnapshot.val().challengeSolved;
 			              	//Adds HTML to challenges.innerHTML
-			              	var html = "<div style=\"border-bottom: 1px solid black;\"><a href=\"challenge.html?cid=" + challengeSnapshot.key + "\"><H3>" + title + "</H3></a><H4>" + description + "</H4><p4>Solved " + solves + " Times</p4></div>";
-			              	solvesContainer.innerHTML = solvesContainer.innerHTML + html;
+			              	database.ref("/users/" + challengeSnapshot.val().challengeCreator + "/name").once("value").then((userSnapshot) => {
+				              	var html = "<div style=\"border-bottom: 1px solid black;\"><a href=\"challenge.html?cid=" + challengeSnapshot.key + "\"><H3>" + title + "</H3></a><H4>" + description + "</H4><p4>Created By<b> " + userSnapshot.val() + "</b>, Solved " + solves + " Times</p4></div>";
+				              	solvesContainer.innerHTML = solvesContainer.innerHTML + html;
+			              	});
 						});
 					});
 					document.getElementById("userSolveCount").innerHTML = "Solved " + String(numSolves) + " Challenges";
@@ -104,7 +106,8 @@
 			              	var description = createChallengeSnapshot.val().challengeDescription;
 			              	var solves = createChallengeSnapshot.val().challengeSolved;
 			              	//Adds HTML to challenges.innerHTML
-			              	var html = "<div style=\"border-bottom: 1px solid black;\"><a href=\"challenge.html?cid=" + createChallengeSnapshot.key + "\"><H3>" + title + "</H3></a><H4>" + description + "</H4><p4>Solved " + solves + " Times, <a href=\"edit.html?cid=\"" + createChallengeSnapshot.key + "\">edit</a></p4></div>";
+			              	console.log(createChallengeSnapshot.key);
+			              	var html = "<div style=\"border-bottom: 1px solid black;\"><a href=\"challenge.html?cid=" + createChallengeSnapshot.key + "\"><H3>" + title + "</H3></a><H4>" + description + "</H4><p4>Solved " + solves + " Times, <a href=\"edit.html?cid=" + createChallengeSnapshot.key + "\">edit</a></p4></div>";
 			              	challengesContainer.innerHTML = challengesContainer.innerHTML + html;
 						});
 					});
