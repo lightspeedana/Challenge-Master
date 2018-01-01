@@ -5,11 +5,11 @@ Challenge Master is a [website](https://challenge-master.firebaseapp.com) that h
 * Scoreboard
 * Scoring System
 * Upload Challenge
+* Answer checking
 * User Profile
 
 ## Coming Soon:
-* Edit Challenges
-* Head to Head Mode?
+* Head to Head Mode or Wagering System?
 * Feel Free To Raise Suggestions
 
 ## Contributing:
