@@ -41,6 +41,14 @@ exports.uploadChallenge = functions.https.onRequest((req, res) => {
   });
 });
 
+exports.editChallenge = functions.https.onRequest((req, res) => {
+  //Edits an Exsisting Challenge
+  cors(req, res, () => {
+    validateFirebaseIdToken(req, res, editChallenge);
+    return true;
+  });
+});
+
 exports.checkSolution = functions.https.onRequest((req, res) => {
   //Checks if a solution is correct and awards points
   cors(req, res, () => {
@@ -59,7 +67,6 @@ function updateUser(req, res) {
   } else {
     res.status(403).send("Invalid Request");
   }
-  
 }
 
 function createChallenge(req, res) {
@@ -99,9 +106,60 @@ function createChallenge(req, res) {
   return true;
 }
 
+function editChallenge(req, res) {
+  var title = validator.escape(req.body.challengeTitle + '');
+  var description = validator.escape(req.body.challengeDescription + '');
+  var content = validator.escape(req.body.challengeContent + '');
+  var solution = validator.escape(req.body.challengeSolution + '');
+  var cid = req.headers.cid;
+  var uid = req.user.uid;
+
+  //Removes Bad Request
+  if (title == "" || description == "" || content == "" || solution == ""  || cid == null || uid == null) {
+    res.status(400).send("Fill in the entire form");
+    return true;
+  }
+
+  //Checks if user is allowed to modify this challenge
+  var database = admin.database();
+  database.ref('/challenges/' + cid).once('value').then((challengeSnapshot) => {
+    var data = challengeSnapshot.val()
+    var creator = data.challengeCreator;
+    var solves = data.challengeSolved;
+
+    if (uid === creator) {
+      //Can Edit Challenge
+      if (solves === 0) {
+        //Can Edit Solution
+        var challengeRef = database.ref('/challenges/' + cid);
+        challengeRef.child("challengeTitle").set(title);
+        challengeRef.child("challengeDescription").set(description);
+        challengeRef.child("challengeContent").set(content);
+        database.ref("/solutions/").child(cid).set(solution);
+        console.log("Users:" + uid + " Updated the challenge and solution of " + cid);
+        res.status(200).send(cid);
+        return true;
+      } else {
+        //Can't Edit Solution
+        var challengeRef = database.ref('/challenges/' + cid);
+        challengeRef.child("challengeTitle").set(title);
+        challengeRef.child("challengeDescription").set(description);
+        challengeRef.child("challengeContent").set(content);
+        console.log("Users:" + uid + " Updated the challenge of " + cid);
+        res.status(200).send(cid);
+        return true;
+      }
+    } else {
+      //Did Not Create Challenge
+      res.status(403).send("You Did not Create This Challenge");
+      return true;
+    }
+  });
+}
+
 function checkSolution(req, res) {
   //Gets Attempt and Token ID
-  var attempt = req.headers.attempt;
+  var attempt = validator.escape(req.headers.attempt);
   var challengeID = req.headers.challenge;
   console.log("Checked: " + attempt + " for " + challengeID); 
   //Gets Solution
@@ -164,6 +222,7 @@ function awardScore(uid, amount) {
     //Write Score
     admin.database().ref('scores').child(uid).set(newScore);
     admin.database().ref('users/' + uid).child("score").set(newScore);
+    console.log("Awarded " + amount + " score to " + uid);
   });
 }
 
