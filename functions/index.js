@@ -49,6 +49,14 @@ exports.editChallenge = functions.https.onRequest((req, res) => {
   });
 });
 
+exports.deleteChallenge = functions.https.onRequest((req, res) => {
+  //Delets a challenge if it is unsolved and created by the requst sender
+  cors(req, res, () => {
+    validateFirebaseIdToken(req, res, deleteChallenge);
+    return true;
+  });
+});
+
 exports.checkSolution = functions.https.onRequest((req, res) => {
   //Checks if a solution is correct and awards points
   cors(req, res, () => {
@@ -99,7 +107,7 @@ function createChallenge(req, res) {
 
   database = admin.database().ref('users/' + uid + '/created');
   var key = database.push().key;
-  database.child(key).set(challengeID);
+  database.child(challengeID).set(key);
 
   console.log("Uploaded Challenge : " + challengeID);
   res.status(200).send(challengeID);
@@ -145,13 +153,40 @@ function editChallenge(req, res) {
         challengeRef.child("challengeTitle").set(title);
         challengeRef.child("challengeDescription").set(description);
         challengeRef.child("challengeContent").set(content);
-        console.log("Users:" + uid + " Updated the challenge of " + cid);
+        console.log("User: " + uid + " Updated the challenge of " + cid);
         res.status(200).send(cid);
         return true;
       }
     } else {
       //Did Not Create Challenge
       res.status(403).send("You Did not Create This Challenge");
+      return true;
+    }
+  });
+}
+
+function deleteChallenge(req, res) {
+  //Delets a challenge if it is unsolved and created by the request sender
+  var cid = req.headers.cid;
+  var database = admin.database();
+  database.ref('challenges/' + cid).once('value').then((challengeSnapshot) => {
+    //Checks if Users Owns Challenge
+    if (req.user.uid == challengeSnapshot.val().challengeCreator) {
+      //If Challenge Is Unsolved
+      if (0 == challengeSnapshot.val().challengeSolved) {
+        //Delete
+        database.ref('/challenges/' + cid).remove();
+        database.ref('/solutions/' + cid).remove();
+        database.ref('/users/' + req.user.uid + '/created/' + cid).remove();
+        console.log("Deleted: " + cid);
+        res.status(200).send("Challenge Deleted");
+        return true;
+      } else {
+        res.status(403).send("Challenges that have been solved can't be deleted");
+        return true;
+      }
+    } else {
+      res.status(403).send("You did not create this challenge");
       return true;
     }
   });
