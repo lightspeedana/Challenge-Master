@@ -28,75 +28,13 @@
 			<a class="titleNavLink" href="info.html"><H2 class="titleNav">Info</H2></a>
 			<H2 class="titleNav" id="signIn" onclick="signIn()">Sign In</H2>
 			<H3 class="titleNav" id="userInfo" onclick="viewProfile()"></H3></div>
-		<div id="descriptionContainer" style="border: 0px; padding-top: 20px;">
-			<p1>The Scoreboard below shows the scores of the top ten players - who have solved the most challenges the quickest.<br><br><b>Points are awarded as follows:</b><br>
-			<ul>
-				<li><b>10 Points</b> are awarded to the <b>first person to solve a challenge.</b></li>
-				<li><b>5 Points</b> are awarded to any user who <b>reports a security vulnerbility in the website, see info.</b></li>
-				<li><b>2 Points</b> are awarded to users who solve a challenge but <b>are not the first to do so.</b></li>
-				<li><b>1 Point</b> is awarded a user who <b>created a challenge when it is solved for the first time.</b></li>
-			</ul></p1></div>
-		<div class="scoreboardContainer">
-			<table id="scoreboard">
-				<col width="20">
-  				<col width="400">
-  				<col width="200">
-				<tr class="scoreboardRow">
-					<th class="scoreboardHeader"><h3 class="scoreboardHeader">Position</h3></th>
-					<th class="scoreboardHeader"><h3 class="scoreboardHeader">Name</h3></th>
-					<th class="scoreboardHeader"><h3 class="scoreboardHeader">Score</h3></th>
-				</tr>
-				<tr class="scoreboardRow">
-					<b><td class="scoreboardCell">1</td></b>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">2</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">3</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">4</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">5</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">6</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">7</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">8</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</td>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">9</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</td>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">10</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr></table>
-			</div>
+		<div>
+			<h2>Messaging Test</h2>
+			<p1>Message:</p1>
+			<input id="message">
+			<button onclick="send()">Send</button></div>
+		<div id="messages">
+			<H2>Messages:</H2></div>
 		<div class="footerContainer">
  			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
  			<a class="footerNavLink" href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">GitHub</H2></a>
@@ -117,7 +55,8 @@
   			});
 
 			//Inits Page
-			loadTopUsers();
+			setUserData();
+			loadMsgs();
 
 			function viewProfile() {
 				document.location.href = "user.html?uid=" + firebase.auth().currentUser.uid;
@@ -158,26 +97,38 @@
 				});		
 			}
 
-  			function loadTopUsers() {
-  				var database = firebase.database();
-  				var table = document.getElementById("scoreboard");
-  				
-  				return database.ref("/scores").orderByValue().limitToLast(10).once("value").then((snapshot) => {
-  					var i = Math.max(1, (10 - (10 - snapshot.numChildren())));
-  					snapshot.forEach(function(childSnapshot) {
-  						//Name
-  						var uid = childSnapshot.key;
-  						database.ref("/users/" + uid).child("name").once("value").then((nameSnapshot) => {
-  							table.rows[i].cells[1].innerHTML = nameSnapshot.val();
-  							//Score
-  							var score = childSnapshot.val();
-  							table.rows[i].cells[2].innerHTML = score;
-  							i = i - 1;
-  						});
-  					});
-  					setUserData();
-      			});
-  			}
+			function send() {
+				var user = firebase.auth().currentUser;
+				var name = user.uid;
+				var database = firebase.database();
+				database.ref('/users/').child(name).once('value').then(usnapshot => {
+					name = usnapshot.val().name; 
+					var input = document.getElementById("message");
+					var message = escape(input.value + "");
+					input.value = "";
+					var key = database.ref('/chat/').push().key;
+					database.ref('/chat/').child(key).set(name + ": " + message);
+				});
+			}
+
+			function loadMsgs() {
+				var database = firebase.database();
+				var messages = document.getElementById('messages');
+				database.ref('/chat/').on('value', (snapshot) => {
+					displayMsgs(snapshot, messages);
+				});
+			}
+
+			function displayMsgs(snapshot, element) {
+				var current = element.innerHTML;
+				snapshot.forEach(child => {
+					element.innerHTML = current + escape(child.val() + "") + "<br>";
+				});
+			}
+
+			function escape(str) {
+  				return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\//g, '&#x2F;').replace(/\\/g, '&#x5C;').replace(/`/g, '&#96;');
+			}
   			</script>
 		</body>
 </html>

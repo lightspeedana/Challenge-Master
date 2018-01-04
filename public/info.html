@@ -18,32 +18,29 @@
     			messagingSenderId: "378652612392"
   			};
   			firebase.initializeApp(config);
-  		</script>
-	</head>
+  		</script></head>
 	<body link="black" vlink="black" alink="black">
 		<div id="titleContainer">
-			<H1 id="title">Challenge Master</H1>
-			<a href="index.html" style="text-decoration:none"><H2 id="titleNavigation">Scoreboard</H2></a>
-			<a href="browse.html" style="text-decoration:none"><H2 id="titleNavigation">Challenges</H2></a>
-			<a href="upload.html" style="text-decoration:none"><H2 id="titleNavigation">Upload</H2></a>
-			<a href="info.html" style="text-decoration:none"><H2 id="titleNavigation">Info</H2></a>
-			<H2 id="signIn" onclick="signIn()">Sign In</H2>
-			<H3 id="userInfo" onclick="viewProfile()"></H3></div>
-		<div id="contentNavigation">
+			<H1>Challenge Master</H1>
+			<a class="titleNavLink" href="index.html"><H2 class="titleNav">Scoreboard</H2></a>
+			<a class="titleNavLink" href="browse.html"><H2 class="titleNav">Challenges</H2></a>
+			<a class="titleNavLink" href="upload.html"><H2 class="titleNav">Upload</H2></a>
+			<a class="titleNavLink" href="info.html"><H2 class="titleNav">Info</H2></a>
+			<H2 class="titleNav" id="signIn" onclick="signIn()">Sign In</H2>
+			<H3 class="titleNav" id="userInfo" onclick="viewProfile()"></H3></div>
+		<div>
 			<H2>Contents</H2>
-			<H4><a href="#Origins">Origins:</a></H4>
-			<H4><a href="#Rules">Rules:</a></H4>
-			<H4><a href="#BugBounty">Bug Bounty:</a></H4>
-			<H4><a href="#WhitePageOfFame">White Page of Fame:</a></H4></div><br>
-		<div id="origins">
-			<a name="Origins">
-			<H2>Origins:</H2>
-			<p1><a herf="https://www.joincyberdiscovery.com/">Cyber Discovery</a> is a goverment endorsed program that is designed to engage school children from years 10-13 into the world of cyber security.  The Cyber Discovery programme is currently in the Cyberstart Assess stage. - <a href="https://www.joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank"><i>More Info about CyberDiscovery and the Stages</i></a>.
-			<br>Due to the time between the first and second stage the <a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><i>Cyber Discovery Unofficial Discord</i></a> was created and players joined creating their own challenges and even completing some additional ones from Cyber Discovery staff.
-			<br>This is why Challenge Master was created, It is a central place to host a variety of challenges for anyone to test their skills. There is also a competitive factor when completing challenges because of a scoring system that allows points to be awarded when you submit the correct flag.</p1></div><br>
-		<div id="rules">
-			<a name="Rules">
-			<H2>Rules:</H2>
+			<p1><b><a href="#Origins">Origins:</a><br></p1>
+			<p1><a href="#Rules">Rules:</a><br></p1>
+			<p1><a href="#BugBounty">Bug Bounty:</a><br></p1>
+			<p1><a href="#WhitePageOfFame">White Page of Fame:</a></p1></b><br></p1></div>
+		<div>
+			<a name="Origins"></a>
+			<H2>Origins</H2>
+			<p1><a herf="https://www.joincyberdiscovery.com/">Cyber Discovery</a> is a goverment endorsed program that is designed to engage school children from years 10-13 into the world of cyber security.  The Cyber Discovery programme is currently in the Cyberstart Assess stage. - <a href="https://www.joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank"><i>More Info about CyberDiscovery and the Stages</i></a>.<br>Due to the time between the first and second stage the <a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><i>Cyber Discovery Unofficial Discord</i></a> was created and players joined creating their own challenges and even completing some additional ones from Cyber Discovery staff.<br>This is why Challenge Master was created, It is a central place to host a variety of challenges for anyone to test their skills. There is also a competitive factor when completing challenges because of a scoring system that allows points to be awarded when you submit the correct flag.</p1></div>
+		<div>
+			<a name="Rules"></a>
+			<H2>Rules</H2>
 			<p1>The rules are simple <b>DO NOT CHEAT</b> and if you find a way to cheat report it responsibly.  Cheating in any form will result in a ban.<br>A non exclusive list of cheating methods: 
 				<ul>
 					<li><b>Creating Multiple Accounts</b> to gain score.</li>
@@ -51,7 +48,7 @@
 					<li><b>Telling people the accepted solution</b> to a challenge, although hints are fine.</li>
 					<li><b>Brute forcing solutions.</b></li>
 				</ul>
-				<br>Points are awarded as follows:
+				Points are awarded as follows:
 				<ul>
 					<li><b>10 Points</b> are awarded to the <b>first person to solve a challenge.</b></li>
 					<li><b>5 Points</b> are awarded to any user who <b>reports a security vulnerbility in the website, see info.</b> - <i>I reserve the right to decide what counts as "a security vulnerbility".</i></li>
@@ -61,24 +58,24 @@
 					<i>I reserve the right to award and revoke score, however I will disclose when this happens.</i>
 				<br>
 				</ul></p1></div>
-		<div id="BugBounty">
-			<a name="BugBounty">
-			<H2>Bug Bounty:</H2>
+		<div>
+			<a name="BugBounty"></a>
+			<H2>Bug Bounty</H2>
 			<p1>As seen above one way of earning points is by disclosing security flaws in the website to me.  This is to be done <b>via discord DM's (@Dan_#4752)</b> and you are <b>not allowed</b> to discuss the nature of the flaw until I tell you that it has been fixed.  I will decide whether your security flaw is worthy of score on a case by case basis. However, I will not award points for showing me that the site can be DDOSed so please do not do this as if I go over a traffic limit the site will shutdown.  Additonally, do not attempt to mess with the site in a manor that will affect the end users experience.  Finally, as well as being rewarded with score your name will be put into the <b>White Page of Fame</b> where you will be regarded as a demi-god second to only the <a href="http://www.jameslyne.com/photo-large-square.jpg" style="text-decoration:none">saviour himself</a>.</p1></div>
-		<div id="WhitePageOfFame:">
-			<a name="WhitePageOfFame">
-			<H2>White Page of Fame:</H2>
+		<div>
+			<a name="WhitePageOfFame"></a>
+			<H2>White Page of Fame</H2>
 			<p1>Security Flaws Found by the Comunity: 1</p1>
 			<ul>
 				<li><H3>James Lyne</H3></li>
 				<li><H3>Aaron Carson</H3></li>
 			</ul></div>
-		<div id="footerContainer" style="border-top:2px solid black;">
- 				<a href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Discord</H2></a>
- 				<a href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">GitHub</H2></a>
-				<a href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Official Twitter</H2></a>
- 				<a href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank" style="text-decoration:none"><H2 id="footerNavigation">Cyber Discovery</H2></a><br><br>
- 				<a href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div>
+		<div class="footerContainer">
+ 			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
+ 			<a class="footerNavLink" href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">GitHub</H2></a>
+			<a class="footerNavLink" href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Official Twitter</H2></a>
+ 			<a class="footerNavLink" href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Cyber Discovery</H2></a><br><br>
+ 			<a class="footerNavLink" href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div>
 		<script>
 			//Does Auth Stuff
   			firebase.auth().getRedirectResult().then(function(result) {
@@ -131,7 +128,6 @@
     					document.getElementById("userInfo").innerHTML = "";
   					}
 				});		
-			}
-  		</script>
+			}</script>
 	</body>
 </html>
