@@ -1,61 +1,68 @@
 /*Document*/
-body {
-	font-size: 100%;
-}
-
-html {
-	width: 100%;
-}
-/*End Document*/
+/*End*/
 
 /*General*/
-div {
-	border-bottom: 2px solid black;
-	padding-bottom: 5px;
-}
-
-h1 {
-	font-size: 2rem;
+p1 {
+	font-size: 1.3em;
 }
 
 h2 {
-	font-size: 1.5rem;
+	font-size: 1.7em;
 }
 
 h3 {
-	font-size: 1.3rem;
+	font-size: 1.6em;
+	margin-top: 8px;
+	margin-bottom: 8px;
 }
 
-p1 {
-	font-size: 1.3rem;
+h4 {
+	font-size: 1.5em;
+	margin-top: 4px;
+	margin-bottom: 4px;
+}
+
+div {
+	border-bottom: 2px solid black;
 }
 
 input, textarea, select {
-	font-size: 1em;
+	font-size: 1.2em;
+	margin: 5px;
+	margin-left: 0px;
 	border: 1px solid black;
+}
+
+input {
+	width: 100%;
+}
+
+textarea {
+	width: 99.75%;
+}
+
+select {
+	width: 20%;
 }
 
 button {
 	font-size: 1em;
+	margin: 5px;
+	margin-left: 0px;
 }
 
-#userInfo {
-	display: inline-block;
-	position: absolute;
-	right:10px;
-	top: 0px;
+form {
+	border-bottom: 2px solid black;
 }
-/*End General*/
 
-/*Header*/
-h2.titleNav {
-	display: inline-block;
-	width: 11%;
-	border-top: 4px solid black;
-	padding: 10px;
-	padding-top: 5px;
-	padding-bottom: 0px;
-	margin: 0;
+h2.title {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+/*End*/
+
+/*Header and Nav*/
+h1.header {
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -64,14 +71,41 @@ h2.titleNav {
     user-select: none;
 }
 
-h2.titleNav:hover, #signIn:hover {
-	border-top: 2px solid gray;
+nav {
+	border-bottom: 2px solid black;
+	margin-bottom: 1em;
 }
 
-a.titleNavLink {
+table.nav {
+	width: 100%;
+	table-layout: fixed;
+}
+
+tr.nav {
+	width: 15%;
+}
+
+a.nav {
 	text-decoration: none;
 }
-/*End Header*/
+
+h2.nav {
+	margin: 0px;
+	padding-top: 5px;
+	border-top: 4px solid black;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+h2.nav:hover {
+	margin-top: 2px;
+	border-top: 2px solid grey;
+}
+/*End*/
 
 /*Footer*/
 a.footerNavLink {
@@ -82,7 +116,7 @@ h2.footerNav {
 	display: inline-block;
   	width: 15%;
  	border-bottom: 4px solid black;
- 	padding: 25px;	
+ 	padding: 25px;
  	padding-top: 5px;
  	padding-bottom: 0px;
 	margin: 0;
@@ -98,8 +132,8 @@ h2.footerNav:hover{
 	border-bottom: 2px solid gray;
 }
 
-div.footerContainer {
-	padding-top: 5px;
+footer {
+	padding-top: 15px;
 	padding-bottom: 5px;
 	border-bottom: 0px;
 	text-align: center;
@@ -110,89 +144,44 @@ div.footerContainer {
 	-ms-user-select: none;
 	user-select: none;
 }
-/*End Footer*/
+/*End*/
 
-/*Home*/
-div.scoreboardContainer {
-	border-bottom: 0px;
-}
-
+/*Index*/
 #scoreboard {
 	border-collapse: collapse;
+	margin-top: 1em;
 	width: 100%;
 	text-align: center;
 }
 
 tr.scoreboardRow {
-	height: 48px;
+	height: 45px;
 }
 
 th.scoreboardHeader {
 	border: 3px solid black;
 }
 
-h3.scoreboardHeader {
-	margin:5px;
-}
-
 td.scoreboardCell {
 	border: 1px solid black;
-	font-size: 1.1em;
+	font-size: 1.2em;
 }
-/*End Home*/
+/*End*/
 
 /*Browse*/
-div.challenges {
-	padding-bottom:0px; 
+div.challenge {
 	border-bottom: 1px solid black;
+	padding-left: 16px;
 }
+/*End*/
 
-#challengeFilter {
-	width: 10%;
-	font-size: 1em;
-	margin-bottom: 10px;
-}
-/*End Browse*/
-
-/*User Page*/
+/*User*/
 div.userStat {
-	padding-bottom: 0px;
+	height:17.5rem;
+	border-top:2px solid black;
+	border-bottom: 0px;
+	background-color: #e8e8e8;
+	overflow-y:scroll;
+	overflow-x: hidden;
 }
-
-div.detailedStat {
-	padding: 0px;
-	border-bottom: 1px solid black;
-}
-/*End User Page*/
-
-/*Stuff*/
-#titleInput, #descriptionInput, #contentInput, #solutionInput {
-	width: 100%;
-}
-
-#userNameChange {
-	margin-bottom: 20px;
-}
-
-#solutionUpload, #editChallenge {
-	margin-top: 20px;
-}
-
-#challengeSolutionInput {
-	margin-top: 10px;
-	width: 100%;
-}
-
-#challengeCheck {
-	margin-top: 10px;
-	margin-bottom: 5px;
-}
-
-#challengeContainer {
-	border-bottom: 2px solid black;
-}
-
-#solvesContainer {
-	padding-bottom: 20px;
-}
-/*End Stuff*/
+/*End*/

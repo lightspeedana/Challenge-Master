@@ -1,63 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<link rel="stylesheet" type="text/css" href="style.css">
-		<link rel="icon" href="icon.png">
 		<title>Challenge Master</title>
+		<meta charset="utf-8">
+		<meta name="author" content="Dan-McL">
+		<meta name="description" content="Challenge Master Hosts Cyber Security Based Challenges for the Unofficial Cyber Discovery Discord Server">
+		<!-- Inits Firebase -->
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-auth.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
-		<script>
-			var config = {
-    			apiKey: "AIzaSyDCEk4vF4WeVLmYIorsXZuMwvMDDLJC5xs",
-    			authDomain: "challenge-master.firebaseapp.com",
-    			databaseURL: "https://challenge-master.firebaseio.com",
-    			projectId: "challenge-master",
-    			storageBucket: "challenge-master.appspot.com",
-    			messagingSenderId: "378652612392"
-  			};
-  			firebase.initializeApp(config);
-  		</script></head>
+  		<!-- Style Sheet and Icon -->
+  		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="icon" href="icon.png"></head>
 	<body link="black" vlink="black" alink="black">
-		<div id="titleContainer">
-            <H1>Challenge Master</H1>
-            <a class="titleNavLink" href="index.html"><H2 class="titleNav">Scoreboard</H2></a>
-            <a class="titleNavLink" href="browse.html"><H2 class="titleNav">Challenges</H2></a>
-            <a class="titleNavLink" href="upload.html"><H2 class="titleNav">Upload</H2></a>
-            <a class="titleNavLink" href="info.html"><H2 class="titleNav">Info</H2></a>
-            <H2 class="titleNav" id="signIn" onclick="signIn()">Sign In</H2>
-            <H3 class="titleNav" id="userInfo" onclick="viewProfile()"></H3></div>
-		<div>
-			<H2 id="challengeTitle">Challenge Title</H2>
-			<H3 id="challengeDescription">This is where the challenge description goes</H3>
-			<p1 id="challengeContent">This is where you describe the challenge and what the user is looking for</p1>
-			<input id="challengeSolutionInput" type="text">
-			<button id="challengeCheck" onclick="check()">Check</button></div>
-		<div>
-			<H2 id="solvedBy"> Solved By 0 People:</H2>
-			<p1 id="solvers"></p1></div>
-		<div class="footerContainer">
-            <a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
-            <a class="footerNavLink" href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">GitHub</H2></a>
-            <a class="footerNavLink" href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Official Twitter</H2></a>
-            <a class="footerNavLink" href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Cyber Discovery</H2></a><br><br>
-            <a class="footerNavLink" href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div>
-        <script>
-    		//Does Auth Stuff
-      		firebase.auth().getRedirectResult().then(function(result) {
-      			if (result.credential) {
-        			var token = result.credential.accessToken;
-      			}
-      			var user = result.user;
-    			}).catch(function(error) {
-      			var errorCode = error.code;
-      			var errorMessage = error.message;
-      			console.log(errorMessage)
-      		});
-
-    		loadChallenge();
-            setUserData();
+		<header><h1 class="header">Challenge Master</h1></header>
+		<nav>
+			<table class="nav">
+				<td class="nav"><a class="nav" href="index.html"><h2 class="nav">Scoreboard</h2></a></td>
+				<td class="nav"><a class="nav" href="browse.html"><h2 class="nav">Browse</h2></a></td>
+				<td class="nav"><a class="nav" href="upload.html"><h2 class="nav">Upload</h2></a></td>
+				<td class="nav"><a class="nav" href="info.html"><h2 class="nav">Info</h2></a></td>
+				<td class="nav" onclick="viewProfile()"><h2 class="nav">Account</h2></td>
+				<td class="nav" onclick="signIn()"><h2 id="signIn" class="nav">Sign In</h2></td>
+			</table></nav>
+		<section></section>
+		<section>
+			<div>
+				<H2 id="challengeTitle">Challenge Title</H2>
+				<H3 id="challengeDescription">This is where the challenge description goes</H3>
+				<p1 id="challengeContent">This is where you describe the challenge and what the user is looking for</p1>
+				<input id="challengeSolutionInput" type="text">
+				<button id="challengeCheck" onclick="check()">Check</button></div>
+			<div>
+				<H2 class="title" id="solvedBy"> Solved By 0 People:</H2>
+				<p1 id="solvers"></p1></div></section>
+		<footer>
+			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
+ 			<a class="footerNavLink" href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">GitHub</H2></a>
+			<a class="footerNavLink" href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Official Twitter</H2></a>
+ 			<a class="footerNavLink" href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Cyber Discovery</H2></a><br><br>
+ 			<a class="footerNavLink" href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div></footer>
+		<script src="init.js"></script>
+		<script type="text/javascript">
+			var user = init();
+			firebase.auth().onAuthStateChanged(u => {
+				init();
+				user = u;
+			});
+			loadChallenge();
 
 			function loadChallenge() {
 				//Get Challenge ID
@@ -69,26 +60,27 @@
 				var database = firebase.database();
 				return database.ref("/challenges/" + challengeId).once("value").then((snapshot) => {
 					//Display Challenge Data
+					var cdata = snapshot.val();
       				//Title
-      				var title = snapshot.val().challengeTitle;
+      				var title = cdata.challengeTitle;
       				document.getElementById("challengeTitle").innerHTML = title;
       				//Decsription
-      				var description = snapshot.val().challengeDescription;
+      				var description = cdata.challengeDescription;
       				document.getElementById("challengeDescription").innerHTML = description;
       				//Content
-      				var content = snapshot.val().challengeContent;
+      				var content = cdata.challengeContent;
       				document.getElementById("challengeContent").innerHTML = content;
       				//Solved
-      				var solved = snapshot.val().challengeSolved;
+      				var solved = cdata.challengeSolved;
       				document.getElementById("solvedBy").innerHTML = "Solved by " + solved + " people:";
-          					
+
           			//People Who Solved Names
           			if (solved != 0) {
                         database.ref("/challenges/" + challengeId + "/challengeSolvers").orderByValue().once("value").then((solversSnapshot) => {
                             solversSnapshot.forEach(function(childSnapshot) {
                                 var solvers = document.getElementById("solvers");
                                 database.ref("/users/" + childSnapshot.key).once("value").then((nameSnapshot) => {
-                                    solvers.innerHTML = solvers.innerHTML + childSnapshot.val() + " - " + nameSnapshot.val().name + "<br>";
+                                    solvers.innerHTML = solvers.innerHTML + childSnapshot.val() + " - <a style='text-decoration:none' href='user.html?uid=" + childSnapshot.key + "'>" + nameSnapshot.val().name + "</a><br>";
                                 });
                             });
                         });
@@ -96,7 +88,7 @@
               	});
     		}
 
-            function check() {
+			function check() {
                 firebase.auth().currentUser.getIdToken(true).then(function(token) {
                     document.getElementById("challengeCheck").disabled = true;
                     var req = new XMLHttpRequest();
@@ -110,57 +102,6 @@
                     req.setRequestHeader('Challenge', getParameterByName("cid"));
                     req.setRequestHeader('Attempt', document.getElementById("challengeSolutionInput").value);
                     req.send();
-                });    
-            }
-
-    		function getParameterByName(name, url) {
-        		if (!url) url = window.location.href;
-        			name = name.replace(/[\[\]]/g, "\\$&");
-        			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-            		results = regex.exec(url);
-        		if (!results) return null;
-        		if (!results[2]) return '';
-        		return decodeURIComponent(results[2].replace(/\+/g, " "));
-    		}
-
-            function viewProfile() {
-                document.location.href = "user.html?uid=" + firebase.auth().currentUser.uid;
-            }
-
-      		function signIn() {
-                var display = document.getElementById("signIn").innerHTML;
-                if (display === "Sign Out") {
-                    //Sign Out
-                    firebase.auth().signOut();
-                    document.getElementById("signIn").innerHTML = "Sign In";
-                }else {
-                    //Sign In
-                    var provider = new firebase.auth.GithubAuthProvider();
-                    firebase.auth().signInWithRedirect(provider);
-                } 
-            }
-
-            function setUserData() {
-            //Displays User Info
-                firebase.auth().onAuthStateChanged(function(user) {
-                    if (user) {
-                        // User is signed in.
-                    var uid = user.uid;
-                    var database = firebase.database();
-                    database.ref("/users/" + uid).once("value").then((snapshot) => {
-                        var name = snapshot.val().name;
-                        var score = snapshot.val().score;
-                        var display = name + " - " + score;
-                        document.getElementById("userInfo").innerHTML = display;
-                        document.getElementById("signIn").innerHTML = "Sign Out";
-                        return display;
-                    });
-                    } else {
-                        // No user is signed in.
-                        document.getElementById("userInfo").innerHTML = "";
-                    }
-                });   
-            }
-      	</script>
+                });
+            }</script>
 	</body>
-</html>

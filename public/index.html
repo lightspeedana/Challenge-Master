@@ -1,183 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<link rel="stylesheet" type="text/css" href="style.css">
-		<link rel="icon" href="icon.png">
 		<title>Challenge Master</title>
+		<meta charset="utf-8">
+		<meta name="author" content="Dan-McL">
+		<meta name="description" content="Challenge Master Hosts Cyber Security Based Challenges for the Unofficial Cyber Discovery Discord Server">
+		<!-- Inits Firebase -->
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-auth.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js"></script>
-		<script>
-			var config = {
-    			apiKey: "AIzaSyDCEk4vF4WeVLmYIorsXZuMwvMDDLJC5xs",
-    			authDomain: "challenge-master.firebaseapp.com",
-    			databaseURL: "https://challenge-master.firebaseio.com",
-    			projectId: "challenge-master",
-    			storageBucket: "challenge-master.appspot.com",
-    			messagingSenderId: "378652612392"
-  			};
-  			firebase.initializeApp(config);
-  		</script></head>
+  		<!-- Style Sheet and Icon -->
+  		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="icon" href="icon.png"></head>
 	<body link="black" vlink="black" alink="black">
-		<div id="titleContainer">
-			<H1>Challenge Master</H1>
-			<a class="titleNavLink" href="index.html"><H2 class="titleNav">Scoreboard</H2></a>
-			<a class="titleNavLink" href="browse.html"><H2 class="titleNav">Challenges</H2></a>
-			<a class="titleNavLink" href="upload.html"><H2 class="titleNav">Upload</H2></a>
-			<a class="titleNavLink" href="info.html"><H2 class="titleNav">Info</H2></a>
-			<H2 class="titleNav" id="signIn" onclick="signIn()">Sign In</H2>
-			<H3 class="titleNav" id="userInfo" onclick="viewProfile()"></H3></div>
-		<div id="descriptionContainer" style="border: 0px; padding-top: 20px;">
-			<p1>The Scoreboard below shows the scores of the top ten players - who have solved the most challenges the quickest.<br><br><b>Points are awarded as follows:</b><br>
-			<ul>
-				<li><b>10 Points</b> are awarded to the <b>first person to solve a challenge.</b></li>
-				<li><b>5 Points</b> are awarded to any user who <b>reports a security vulnerbility in the website, see info.</b></li>
-				<li><b>2 Points</b> are awarded to users who solve a challenge but <b>are not the first to do so.</b></li>
-				<li><b>1 Point</b> is awarded a user who <b>created a challenge when it is solved for the first time.</b></li>
-			</ul></p1></div>
-		<div class="scoreboardContainer">
-			<table id="scoreboard">
-				<col width="20">
-  				<col width="400">
-  				<col width="200">
-				<tr class="scoreboardRow">
-					<th class="scoreboardHeader"><h3 class="scoreboardHeader">Position</h3></th>
-					<th class="scoreboardHeader"><h3 class="scoreboardHeader">Name</h3></th>
-					<th class="scoreboardHeader"><h3 class="scoreboardHeader">Score</h3></th>
-				</tr>
-				<tr class="scoreboardRow">
-					<b><td class="scoreboardCell">1</td></b>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">2</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">3</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">4</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">5</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">6</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">7</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">8</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</td>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">9</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</td>
-				<tr class="scoreboardRow">
-					<td class="scoreboardCell">10</td>
-					<td class="scoreboardCell"></td>
-					<td class="scoreboardCell"></td>
-				</tr></table>
-			</div>
-		<div class="footerContainer">
- 			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
+		<header><h1 class="header">Challenge Master</h1></header>
+		<nav>
+			<table class="nav">
+				<td class="nav"><a class="nav" href="index.html"><h2 class="nav">Scoreboard</h2></a></td>
+				<td class="nav"><a class="nav" href="browse.html"><h2 class="nav">Browse</h2></a></td>
+				<td class="nav"><a class="nav" href="upload.html"><h2 class="nav">Upload</h2></a></td>
+				<td class="nav"><a class="nav" href="info.html"><h2 class="nav">Info</h2></a></td>
+				<td class="nav" onclick="viewProfile()"><h2 class="nav">Account</h2></td>
+				<td class="nav" onclick="signIn()"><h2 id="signIn" class="nav">Sign In</h2></td>
+			</table></nav>
+		<section>
+			<div style="border-bottom: 1px solid black;">
+				<p1>The Scoreboard below shows the scores of the top ten players - who have solved the most challenges the quickest.<br><br><b>Points are awarded as follows:</b><br>
+				<ul style="margin-bottom: 0px;">
+					<li><b>10 Points</b> are awarded to the <b>first person to solve a challenge.</b></li>
+					<li><b>5 Points</b> are awarded to any user who <b>reports a security vulnerbility in the website, see info.</b></li>
+					<li><b>2 Points</b> are awarded to users who solve a challenge but <b>are not the first to do so.</b></li>
+					<li><b>1 Point</b> is awarded a user who <b>created a challenge when it is solved for the first time.</b></li>
+				</ul></p1>
+				<table id="scoreboard">
+					<col width="20">
+	  				<col width="400">
+	  				<col width="200">
+					<tr class="scoreboardRow">
+						<th class="scoreboardHeader"><h3 class="scoreboardHeader">Position</h3></th>
+						<th class="scoreboardHeader"><h3 class="scoreboardHeader">Name</h3></th>
+						<th class="scoreboardHeader"><h3 class="scoreboardHeader">Score</h3></th>
+					</tr>
+					<tr class="scoreboardRow">
+						<b><td class="scoreboardCell">1</td></b>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">2</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">3</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">4</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">5</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">6</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">7</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">8</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</td>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">9</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</td>
+					<tr class="scoreboardRow">
+						<td class="scoreboardCell">10</td>
+						<td class="scoreboardCell"></td>
+						<td class="scoreboardCell"></td>
+					</tr>
+				</table></div></section>
+		<footer>
+			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
  			<a class="footerNavLink" href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">GitHub</H2></a>
 			<a class="footerNavLink" href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Official Twitter</H2></a>
  			<a class="footerNavLink" href="https://joincyberdiscovery.com/" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Cyber Discovery</H2></a><br><br>
- 			<a class="footerNavLink" href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div>
-		<script>
-			//Does Auth Stuff
-  			firebase.auth().getRedirectResult().then(function(result) {
-  				if (result.credential) {
-    				var token = result.credential.accessToken;
-  				}
-  				var user = result.user;
-			}).catch(function(error) {
-  				var errorCode = error.code;
-  				var errorMessage = error.message;
-  				console.log(errorMessage)
-  			});
-
-			//Inits Page
+ 			<a class="footerNavLink" href="https://raw.githubusercontent.com/Dan-McL/Challenge-Master/master/LICENSE" rel="noopener noreferrer" target="_blank"><p4>Copyright (c) 2017 Daniel</p4></a></div></footer>
+		<script src="init.js"></script>
+		<script type="text/javascript">
+			var user = init();
+			firebase.auth().onAuthStateChanged(u => {
+				init();
+				user = u;
+			});
 			loadTopUsers();
 
-			function viewProfile() {
-				document.location.href = "user.html?uid=" + firebase.auth().currentUser.uid;
-			}
-
-  			function signIn() {
-  				var display = document.getElementById("signIn").innerHTML;
-  				if (display === "Sign Out") {
-  					//Sign Out
-  					firebase.auth().signOut();
-  					document.getElementById("signIn").innerHTML = "Sign In";
-  				}else {
-  					//Sign In
-  					var provider = new firebase.auth.GithubAuthProvider();
-  					firebase.auth().signInWithRedirect(provider);
-  				}	
-  			}
-
-  			function setUserData() {
-				//Displays User Info
-				firebase.auth().onAuthStateChanged(function(user) {
-  					if (user) {
-    					// User is signed in.
-    					var uid = user.uid;
-  						var database = firebase.database();
-  						database.ref("/users/" + uid).once("value").then((snapshot) => {
-  							var name = snapshot.val().name;
-    						var score = snapshot.val().score;
-    						var display = name + " - " + score;
-							document.getElementById("userInfo").innerHTML = display;
-							document.getElementById("signIn").innerHTML = "Sign Out";
-							return display;
-  						});
- 					} else {
-    					// No user is signed in.
-    					document.getElementById("userInfo").innerHTML = "";
-  					}
-				});		
-			}
-
   			function loadTopUsers() {
-  				var database = firebase.database();
   				var table = document.getElementById("scoreboard");
-  				
+  				var database = firebase.database();
+
   				return database.ref("/scores").orderByValue().limitToLast(10).once("value").then((snapshot) => {
   					var i = Math.max(1, (10 - (10 - snapshot.numChildren())));
   					snapshot.forEach(function(childSnapshot) {
   						//Name
   						var uid = childSnapshot.key;
   						database.ref("/users/" + uid).child("name").once("value").then((nameSnapshot) => {
-  							table.rows[i].cells[1].innerHTML = nameSnapshot.val();
+  							table.rows[i].cells[1].innerHTML = "<a style='text-decoration:none;' href='user.html?uid=" + uid + "'>" + nameSnapshot.val() + "</a>";
   							//Score
   							var score = childSnapshot.val();
   							table.rows[i].cells[2].innerHTML = score;
   							i = i - 1;
   						});
   					});
-  					setUserData();
       			});
-  			}
-  			</script>
-		</body>
-</html>
+  			}</script>
+	</body>
