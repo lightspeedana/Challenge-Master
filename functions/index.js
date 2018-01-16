@@ -11,14 +11,14 @@ exports.initUser = functions.auth.user().onCreate(event => {
   const uid = user.uid;
   const score = 0;
   admin.database().ref('users/' + uid).child('score').set(score);
-	
+
   var name = "";
   if(user.displayName === undefined) {
     name = uid;
   } else {
     name = validator.escape(user.displayName);
   }
-	
+
 	admin.database().ref('users/' + uid).child('name').set(name);
   admin.database().ref('scores').child(uid).set(score);
   console.log("Created User: " + name);
@@ -78,40 +78,81 @@ function updateUser(req, res) {
 }
 
 function createChallenge(req, res) {
-  var title = validator.escape(req.body.challengeTitle + '');
-  var description = validator.escape(req.body.challengeDescription + '');
-  var content = validator.escape(req.body.challengeContent + '');
-  var uid = req.user.uid;
-  var solution = validator.escape(req.body.challengeSolution + '');
+  var title = validator.escape(req.body.Title + '');
+  var description = validator.escape(req.body.Description + '');
+  var content = validator.escape(req.body.Content + '');
+  var solution = validator.escape(req.body.Solution + '');
+  var entryFee = validator.isInt(req.body.EntryFee + '', {gt: 1});
 
-  //Removes Bad Request
-  if (title == "" || description == "" || content == "" || solution == "") {
-    res.status(400).send("Fill in the entire form");
-    return true;
+  var uid = req.user.uid;
+  var type = req.headers.type;
+
+  if (type === "challenge") {
+
+	  //Removes Bad Request
+	  if (title == "" || description == "" || content == "" || solution == "") {
+	    res.status(400).send("Fill in the entire form");
+	    return true;
+	  }
+
+	  //Creates Challenge
+	  var challengeData = {
+	    challengeTitle:title,
+	    challengeDescription:description,
+	    challengeContent:content,
+	    challengeCreator:uid,
+	    challengeSolved:0
+	  };
+
+	  var database = admin.database().ref('challenges');
+	  var challengeID = database.push().key;
+	  database.child(challengeID).set(challengeData);
+	  database = admin.database().ref('solutions');
+	  database.child(challengeID).set(solution);
+
+	  database = admin.database().ref('users/' + uid + '/created');
+	  var key = database.push().key;
+	  database.child(challengeID).set(key);
+
+	  console.log("Uploaded Challenge : " + challengeID);
+	  res.status(200).send(challengeID);
+	  return true;
+  }else if (type === "wager") {
+	  //Removes Bad Request
+	  if (title == "" || description == "" || content == "" || solution == "" || entryFee == false) {
+	    res.status(400).send("Fill in the entire form");
+	    return true;
+	  }
+
+	  entryFee = parseInt(req.body.EntryFee);
+
+	  //Creates Challenge
+	  var wagerData = {
+	    wagerTitle:title,
+	    wagerDescription:description,
+	    wagerContent:content,
+		wagerPot: 0,
+		wagerEntryFee: entryFee,
+		wagerStarted: false,
+	    wagerCreator:uid,
+	    wagerSolved:false
+	  };
+
+	  var database = admin.database().ref('wagers');
+	  var wagerID = database.push().key;
+	  database.child(wagerID).set(wagerData);
+	  database = admin.database().ref('solutions');
+	  database.child(wagerID).set(solution);
+
+	  database = admin.database().ref('users/' + uid + '/hosted');
+	  var key = database.push().key;
+	  database.child(wagerID).set(key);
+
+	  console.log("Uploaded Wager : " + wagerID);
+	  res.status(200).send(wagerID);
+	  return true;
   }
 
-  //Creates Challenge
-  var challengeData = {
-    challengeTitle:title,
-    challengeDescription:description,
-    challengeContent:content,
-    challengeCreator:uid,
-    challengeSolved:0
-  };
-  
-  var database = admin.database().ref('challenges');
-  var challengeID = database.push().key;
-  database.child(challengeID).set(challengeData);
-  database = admin.database().ref('solutions');
-  database.child(challengeID).set(solution);
-
-  database = admin.database().ref('users/' + uid + '/created');
-  var key = database.push().key;
-  database.child(challengeID).set(key);
-
-  console.log("Uploaded Challenge : " + challengeID);
-  res.status(200).send(challengeID);
-  return true;
 }
 
 function editChallenge(req, res) {
@@ -196,7 +237,7 @@ function checkSolution(req, res) {
   //Gets Attempt and Token ID
   var attempt = validator.escape(req.headers.attempt);
   var challengeID = req.headers.challenge;
-  console.log("Checked: " + attempt + " for " + challengeID); 
+  console.log("Checked: " + attempt + " for " + challengeID);
   //Gets Solution
   admin.database().ref('solutions/').child(challengeID).once("value").then((ssnapshot) => {
     var solution = ssnapshot.val();
@@ -214,6 +255,7 @@ function checkSolution(req, res) {
             admin.database().ref('users/' + req.user.uid + '/solves').child(challengeID).set(10);
             //Award Score
             awardScore(req.user.uid, 10);
+			console.log("Correct - First");
             res.status(200).send("Correct You Will Recieve Your Points Shortly");
             //Award Score To Creator
             awardScore(csnapshot.val().challengeCreator, 1);
@@ -232,16 +274,19 @@ function checkSolution(req, res) {
                 admin.database().ref('challenges/' + challengeID + '/challengeSolvers').child(req.user.uid).set(csnapshot.val().challengeSolved + 1);
                 admin.database().ref('users/' + req.user.uid + '/solves').child(challengeID).set(2);
                 awardScore(req.user.uid, 2);
+				console.log("Correct - Not First");
                 res.status(200).send("Correct You Will Recieve Your Points Shortly");
               }else {
-                res.status(200).send("You Have Already Solved This Challenge");
+				console.log("Already Solved");
+            	res.status(200).send("You Have Already Solved This Challenge");
               }
             });
           }
         }
-      });  
+      });
     }else {
-      res.status(200).send("Incorrect - Please do not guess");
+		console.log("Incorrect");
+        res.status(200).send("Incorrect - Please do not guess");
     }
   });
   //Awards Score
@@ -279,7 +324,7 @@ const validateFirebaseIdToken = (req, res, next) => {
   admin.auth().verifyIdToken(idToken).then(decodedIdToken => {
     console.log('ID Token correctly decoded', decodedIdToken);
     req.user = decodedIdToken;
-    next(req, res);      
+    next(req, res);
   }).catch(error => {
     console.error('Error while verifying Firebase ID token:', error);
     res.status(403).send('Unauthorized');
