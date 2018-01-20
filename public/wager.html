@@ -31,20 +31,20 @@
 				<h3 id="wagerDescription">Wager Descrition</h3>
 				<p1 id="wagerContent" style="display: none;">Wager Content</p1>
 			</div>
-			<div>
+			<div style="padding-bottom:8px;">
 				<h3 id="wagerPot">Current Pot: 0</h3>
 				<h3 id="entryFee">Entry Fee: 0</h3>
 				<p1 id="wagerPlayers"><b>Players: </b></p1>
-				<br><button onclick="enter()">Enter</button>
-				<br><button onclick="start()" style="display: none;">Start</button>
+				<br><button id="enterButton" onclick="enter()" style="display: none;">Enter</button>
+				<button id="startButton" onclick="start()" style="display: none;margin-bottom:0px;">Start</button>
 			</div>
-			<div style="display: none;">
-				<input id="challengeSolutionInput" type="text">
+			<div id="check" style="display: none;">
+				<input id="challengeSolutionInput" type="text" style="width:95%">
 				<button id="challengeCheck" onclick="check()">Check</button>
 			</div>
 			<div><H2 style="margin-top:8px; margin-bottom: 8px;">Chat</H2></div>
 			<div>
-				<div id="messages" style="height:20rem; border:0px; overflow-y:scroll; overflow-x: hidden;"></div>
+				<div id="messages" style="height:20rem; border:0px; overflow-y:scroll; overflow-x: hidden; margin-left:8px; margin-right:8px;"></div>
 				<br>
 				<input id="message" style="width:95%">
 				<button onclick="send()">Send</button></div>
@@ -64,31 +64,126 @@
 				user = u;
 			});
 			setupDisplay(user);
+			loadMsgs();
+
+			function send() {
+				var user = firebase.auth().currentUser.uid;
+				var database = firebase.database();
+				var wid = getParameterByName("wid");
+				database.ref('/users/').child(user).once('value').then(usnapshot => {
+					name = usnapshot.val().name;
+					var input = document.getElementById("message");
+					var message = escape(input.value + "");
+					input.value = "";
+					var key = database.ref('/wagers/' + wid + '/wagerChat').push().key;
+					database.ref('/wagers/' + wid + '/wagerChat').child(key).set(name + ": " + message);
+				});
+			}
+
+			function loadMsgs() {
+				var database = firebase.database();
+				var messages = document.getElementById('messages');
+				var wid = getParameterByName("wid");
+				database.ref('/wagers/' + wid + '/wagerChat').on('value', (snapshot) => {
+					displayMsgs(snapshot, messages);
+				});
+			}
+
+			function displayMsgs(snapshot, element) {
+				var current = element.innerHTML;
+				snapshot.forEach(child => {
+					element.innerHTML = current + escape(child.val() + "") + "<br>";
+				});
+				element.scrollTo(0,element.scrollHeight);
+			}
+
+			function escape(str) {
+  				return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\//g, '&#x2F;').replace(/\\/g, '&#x5C;').replace(/`/g, '&#96;');
+			}
 
 			function setupDisplay(user) {
+				var database = firebase.database();
 				wid = getParameterByName("wid");
 				if (wid === null) {
 					document.location.href = "index.html";
 				}
 
-				var database = firebase.database();
-				database.ref("/wagers/" + wid).once("value").then(wagerSnapshot => {
-					var wdata = wagerSnapshot.val()
-					document.getElementById("wagerTitle").innerHTML = wdata.wagerTitle;
-					document.getElementById("wagerDescription").innerHTML = wdata.wagerDescription;
-					document.getElementById("wagerContent").innerHTML = wdata.wagerContent;
-					document.getElementById("wagerPot").innerHTML = "Current Pot: " + wdata.wagerPot;
-					document.getElementById("entryFee").innerHTML = "Entry Fee: " + wdata.wagerEntryFee;
-
-					if (wagerSnapshot.child("wagerEntrants").exists()) {
-						var players = document.getElementById("wagerPlayers");
-						wagerSnapshot.child("wagerEntrants").forEach(entrant => {
-							database.ref("/users/" + entrant.key).once("value").then(userSnapshot => {
-								players.innerHTML = players.innerHTML + "<a style='text-decoration:none' href='user.html?uid=" + entrant.key + "'>" + userSnapshot.val().name + "</a> ";
-							});
+				database.ref('/wagers/' + wid + '/wagerDetails/wagerDetails').on('value', (snapshot => {
+					var wdata = snapshot.val();
+					if (user !== undefined) {
+						var uid = user.uid;
+						var entered = snapshot.child('wagerEntrants').forEach(entrant => {
+							if (uid === entrant.key) {
+								return true;
+							}
 						});
+						if (uid === wdata.wagerCreator) {
+							var host = true;
+						}
+					}else {
+						var entered = false;
+						var host = false;
 					}
-				});
+
+					if (wdata.wagerStarted === true && entered === true) {
+						document.getElementById("check").style.display = "block";
+					}
+					if (wdata.wagerStarted === false && host === true) {
+						document.getElementById("startButton").style.display = "block";
+					}
+				}));
+			}
+
+			function enter() {
+				var button = document.getElementById('enterButton');
+				button.disabled = true;
+				firebase.auth().currentUser.getIdToken(true).then(function(token) {
+					var req = new XMLHttpRequest();
+			        req.open('GET', "https://us-central1-challenge-master.cloudfunctions.net/enterWager");
+			        req.onload = function() {
+			        	//On Load redirect to challenge page
+			            alert(req.response);
+						button.disabled = false;
+			        }.bind(this);
+			        req.setRequestHeader('Authorization', 'Bearer ' + token);
+			        req.setRequestHeader('Wid', getParameterByName("wid"));
+			        req.send();
+		    	});
+			}
+
+			function start() {
+				var button = document.getElementById('startButton');
+				button.disabled = true;
+				firebase.auth().currentUser.getIdToken(true).then(function(token) {
+					var req = new XMLHttpRequest();
+			        req.open('GET', "https://us-central1-challenge-master.cloudfunctions.net/startWager");
+			        req.onload = function() {
+			        	//On Load redirect to challenge page
+			            alert(req.response);
+						button.disabled = false;
+			        }.bind(this);
+			        req.setRequestHeader('Authorization', 'Bearer ' + token);
+			        req.setRequestHeader('Wid', getParameterByName("wid"));
+			        req.send();
+		    	});
+			}
+
+			function check() {
+				var button = document.getElementById('challengeCheck');
+				button.disabled = true;
+				firebase.auth().currentUser.getIdToken(true).then(function(token) {
+					var req = new XMLHttpRequest();
+			        req.open('GET', "https://us-central1-challenge-master.cloudfunctions.net/checkWager");
+			        req.onload = function() {
+			        	//On Load redirect to challenge page
+			            alert(req.response);
+						button.disabled = false;
+			        }.bind(this);
+			        req.setRequestHeader('Authorization', 'Bearer ' + token);
+			        req.setRequestHeader('Wid', getParameterByName("wid"));
+					req.setRequestHeader('Attempt', document.getElementById('challengeSolutionInput').value);
+			        req.send();
+		    	});
 			}
 		</script>
 	</body>
