@@ -65,6 +65,29 @@ exports.checkSolution = functions.https.onRequest((req, res) => {
   });
 });
 
+exports.enterWager = functions.https.onRequest((req, res) => {
+	//Enters a User Into A Wager and Puts their Score into the pot
+	cors(req, res, () => {
+		validateFirebaseIdToken(req, res, enterWager);
+		return true;
+	});
+});
+
+exports.startWager = functions.https.onRequest((req, res) => {
+	//Releases the content of a wager and prevents new entrants
+	cors(req, res, () => {
+		validateFirebaseIdToken(req, res, startWager);
+		return true;
+	});
+});
+
+exports.checkWager = functions.https.onRequest((req, res) => {
+	//Checks the users attempt against the solution for a wager and awards points if correct
+	cors(req, res, () => {
+		validateFirebaseIdToken(req, res, checkWager);
+		return true;
+	});
+});
 //Functions
 function updateUser(req, res) {
   var name = validator.escape(req.headers.name);
@@ -127,16 +150,19 @@ function createChallenge(req, res) {
 	  entryFee = parseInt(req.body.EntryFee);
 
 	  //Creates Challenge
-	  var wagerData = {
-	    wagerTitle:title,
-	    wagerDescription:description,
-	    wagerContent:content,
-		wagerPot: 0,
-		wagerEntryFee: entryFee,
-		wagerStarted: false,
-	    wagerCreator:uid,
-	    wagerSolved:false
+	  var wagerDetails = {
+		  wagerTitle:title,
+  	  	  wagerDescription:description,
+		  wagerCreator:uid,
+		  wagerEntryFee: entryFee,
+		  wagerPot: 0,
+		  wagerStarted: false,
+		  wagerSolved: false
 	  };
+
+	  var wagerData = {};
+	  wagerData["wagerDetails"] = wagerDetails;
+	  wagerData["wagerContent"] = content;
 
 	  var database = admin.database().ref('wagers');
 	  var wagerID = database.push().key;
@@ -293,17 +319,130 @@ function checkSolution(req, res) {
   //Display That Challenge Has Been Solved
 }
 
+function enterWager(req, res) {
+	var wagerID = req.headers.wid;
+	var uid = req.user.uid;
+	admin.database().ref('/users/' + uid).child("score").once("value").then((usnapshot) => {
+		admin.database().ref('/wagers/' + wagerID + '/wagerDetails').once("value").then((wsnapshot) => {
+			var wdata = wsnapshot.val();
+			if (wdata.wagerStarted === false) {
+				if (usnapshot.val() >= wdata.wagerEntryFee) {
+					var entrant = wsnapshot.child("wagerEntrants").forEach(entrant => {
+						if (entrant.key === uid) {
+							return true;
+						}
+					});
+					if (entrant !== true) {
+						var database = admin.database().ref('wagers/' + wagerID + '/wagerDetails').child('wagerEntrants');
+						data = database.push().key;
+						database.child(uid).set(data);
+						revokeScore(uid, wdata.wagerEntryFee);
+						admin.database().ref('/wagers/' + wagerID + '/wagerDetails').child('wagerPot').set(wdata.wagerPot + wdata.wagerEntryFee);
+						console.log(uid + " entered the wager");
+						res.status(200).send("You are now in the wager");
+						return true;
+					}
+					console.log("Failed - Player Already In The Wager")
+					res.status(403).send("You are already entered in this wager");
+					return true;
+				}
+				console.log("Failed - Player Doesn't Have Enough Score")
+				res.status(403).send("You don't have enough score to enter this wager");
+				return true;
+			}
+			console.log("Failed - Wager Has Started")
+			res.status(403).send("You Can't Join a Wager That Has Already Started");
+			return true;
+		});
+	});
+};
+
+function startWager(req, res) {
+	var wagerID = req.headers.wid;
+	admin.database().ref('wagers/' + wagerID + '/wagerDetails').once("value").then((wsnapshot) => {
+		var wdata = wsnapshot.val();
+		if (req.user.uid === wdata.wagerCreator) {
+			if (wsnapshot.child("wagerEntrants").numChildren() >= 2) {
+				//Start Wager
+				admin.database().ref('wagers/' + wagerID + '/wagerDetails').child("wagerStarted").set(true);
+				console.log("Wager " + wagerID + " has begun")
+				res.status(200).send("The wager has begun");
+				return true;
+			}
+			console.log("Failed - Not Enough Players")
+			res.status(403).send("There must be at least 2 entrants to start a wager");
+			return true;
+		}
+		console.log("Failed - Permision Denied")
+		res.status(403).send("You do not own this wager - Permision Denied");
+		return true;
+	});
+}
+
+function checkWager(req, res) {
+	var uid = req.user.uid;
+	var wid = req.headers.wid;
+	var attempt = validator.escape(req.headers.attempt);
+	var database = admin.database();
+	database.ref('/wagers/' + wid + '/wagerDetails').once("value").then(wsnapshot => {
+		database.ref('/solutions/' + wid).once("value").then(answerSnapshot => {
+			wdata = wsnapshot.val();
+			if (wdata.wagerStarted === true) {
+				if (wdata.wagerSolved === false) {
+					var entrant = wsnapshot.child("wagerEntrants").forEach(entrant => {
+						if (entrant.key === uid) {
+							return true;
+						}
+					});
+					if (entrant === true) {
+						//User Is Eligible
+						if (attempt === answerSnapshot.val()) {
+							//Attempt is Correct
+							database.ref('/wagers/' + wid + '/wagerDetails').child('wagerSolved').set(true);
+							database.ref('/wagers/' + wid + '/wagerDetails').child('wagerSolver').set(uid);
+							awardScore(uid, wdata.wagerPot);
+							awardScore(wdata.wagerCreator, Math.floor(wdata.wagerPot/10));
+							console.log("Correct");
+					        res.status(200).send("Correct - You Will Recieve Your Score Shortly");
+							return true;
+						}
+						console.log("Incorrect");
+				        res.status(200).send("Incorrect - Please do not guess");
+						return true;
+					}
+					console.log("Failed - Permision Denied")
+					res.status(403).send("You Have to be Entered in the Wager to Submit Answers");
+					return true;
+				}
+				console.log("Failed - Already Solved")
+				res.status(403).send("This wager has finished");
+				return true;
+			}
+			console.log("Failed - Not Started")
+			res.status(403).send("The Wager Has Not Started");
+			return true;
+		});
+	});
+}
+
 function awardScore(uid, amount) {
   var database = admin.database().ref('scores/').child(uid).once("value").then((snapshot) => {
-    //Get Currnt Score
     var score = snapshot.val();
-    //Add amount to score
     var newScore = score + amount;
-    //Write Score
     admin.database().ref('scores').child(uid).set(newScore);
     admin.database().ref('users/' + uid).child("score").set(newScore);
     console.log("Awarded " + amount + " score to " + uid);
   });
+}
+
+function revokeScore(uid, amount) {
+	var database = admin.database().ref('scores/').child(uid).once("value").then((snapshot) => {
+    	var score = snapshot.val();
+      	var newScore = score - amount;
+      	admin.database().ref('scores').child(uid).set(newScore);
+      	admin.database().ref('users/' + uid).child("score").set(newScore);
+      	console.log("Revoked " + amount + " score from " + uid);
+    });
 }
 
 const validateFirebaseIdToken = (req, res, next) => {
