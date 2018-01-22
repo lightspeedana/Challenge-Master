@@ -46,7 +46,7 @@
 			<div>
 				<div id="messages" style="height:20rem; border:0px; overflow-y:scroll; overflow-x: hidden; margin-left:8px; margin-right:8px;"></div>
 				<br>
-				<input id="message" style="width:95%">
+				<input id="message" style="width:95%" malength="200">
 				<button onclick="send()">Send</button></div>
 			</div>
 		</section>
@@ -75,7 +75,7 @@
 					var input = document.getElementById("message");
 					var message = escape(input.value + "");
 					input.value = "";
-					var key = database.ref('/wagers/' + wid + '/wagerChat').push().key;
+					var key = Date.now();
 					database.ref('/wagers/' + wid + '/wagerChat').child(key).set(name + ": " + message);
 				});
 			}
@@ -108,7 +108,7 @@
 					document.location.href = "index.html";
 				}
 
-				database.ref('/wagers/' + wid + '/wagerDetails/wagerDetails').on('value', (snapshot => {
+				database.ref('/wagers/' + wid + '/wagerDetails').on('value', (snapshot => {
 					var wdata = snapshot.val();
 					if (user !== undefined) {
 						var uid = user.uid;
@@ -125,11 +125,69 @@
 						var host = false;
 					}
 
-					if (wdata.wagerStarted === true && entered === true) {
+					document.getElementById("wagerTitle").innerHTML = wdata.wagerTitle;
+					document.getElementById("wagerDescription").innerHTML = wdata.wagerDescription;
+					document.getElementById("entryFee").innerHTML = "Entry Fee: " + wdata.wagerEntryFee;
+
+					if (wdata.wagerStarted === true) {
+						document.getElementById("wagerPot").innerHTML = "Prize Pot: " + wdata.wagerPot;
+					}else if (wdata.wagerStarted === false) {
+						document.getElementById("wagerPot").innerHTML = "Current Prize Pot: " + wdata.wagerPot;
+					}
+
+					if (wdata.wagerStarted === true && entered === true && wdata.wagerSolved === false) {
 						document.getElementById("check").style.display = "block";
+					}else {
+						document.getElementById("check").style.display = "none";
 					}
 					if (wdata.wagerStarted === false && host === true) {
 						document.getElementById("startButton").style.display = "block";
+					}else {
+						document.getElementById("startButton").style.display = "none";
+					}
+					if (wdata.wagerStarted === false && entered !== true && host !== true) {
+						document.getElementById("enterButton").style.display = "block";
+					}else {
+						document.getElementById("enterButton").style.display = "none";
+					}
+					if (wdata.wagerStarted === true) {
+						database.ref('/wagers/' + wid + '/wagerContent').once('value').then(contentSnapshot => {
+							var content = document.getElementById('wagerContent');
+							content.innerHTML = contentSnapshot.val();
+							content.style.display = "block";
+						});
+					}else {
+						var content = document.getElementById('wagerContent');
+						content.innerHTML = "";
+						content.style.display = "none";
+					}
+					if (wdata.wagerSolved === true) {
+						database.ref('/users/' + wdata.wagerSolver + '/name').once('value').then(winnerName => {
+							document.getElementById("entryFee").innerHTML = "Wager Won By: " + winnerName.val();
+						});
+					}
+				}));
+
+				database.ref('/wagers/' + wid + '/wagerDetails/wagerEntrants').on('value', (entrants => {
+					var players = document.getElementById("wagerPlayers");
+					players.innerHTML = "<b>Players: </b>";
+					entrants.forEach(entrant => {
+						database.ref('/users/' + entrant.key + '/name').once("value").then(nameSnapshot => {
+							players.innerHTML = players.innerHTML + "<a style='text-decoration:none' href='user.html?uid=" + entrant.key + "'>" + nameSnapshot.val() + "</a>,&nbsp;&nbsp;&nbsp;&nbsp;";
+						});
+					});
+				}));
+
+				database.ref('/wagers/' + wid + '/wagerDetails/wagerEntrants').orderByValue().startAt(Date.now()).on('child_added', (entrant => {var audio = new Audio('./Sounds/playerJoined.mp3');audio.play();}));
+				database.ref('/wagers/' + wid + '/wagerChat').orderByKey().startAt(String(Date.now())).on('child_added', (entrant => {var audio = new Audio('./Sounds/alert.mp3');audio.play();}));
+
+				database.ref('/wagers/' + wid + '/wagerDetails').on('child_changed', (changedChild => {
+					if (changedChild.key === 'wagerStarted') {
+						var audio = new Audio('./Sounds/starting.mp3');
+						audio.play();
+					}else if (changedChild.key === 'wagerSolved') {
+						var audio = new Audio('./Sounds/solved.mp3');
+						audio.play();
 					}
 				}));
 			}
