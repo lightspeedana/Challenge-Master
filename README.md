@@ -9,7 +9,6 @@ Challenge Master is a [website](https://challenge-master.firebaseapp.com) that h
 * User Profile
 
 ## Coming Soon:
-* Head to Head Mode or Wagering System?
 * Feel Free To Raise Suggestions
 
 ## Contributing:
