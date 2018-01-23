@@ -93,6 +93,7 @@ h2.nav {
 	margin: 0px;
 	padding-top: 5px;
 	border-top: 4px solid black;
+	text-align: center;
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
