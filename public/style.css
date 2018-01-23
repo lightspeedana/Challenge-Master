@@ -93,6 +93,7 @@ h2.nav {
 	margin: 0px;
 	padding-top: 5px;
 	border-top: 4px solid black;
+	text-align: center;
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -104,6 +105,7 @@ h2.nav {
 h2.nav:hover {
 	margin-top: 2px;
 	border-top: 2px solid grey;
+	color: grey;
 }
 /*End*/
 
@@ -130,6 +132,7 @@ h2.footerNav {
 
 h2.footerNav:hover{
 	border-bottom: 2px solid gray;
+	color: grey;
 }
 
 footer {
