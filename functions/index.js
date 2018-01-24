@@ -414,6 +414,7 @@ function checkWager(req, res) {
 							var promises = [];
 							promises.push(database.ref('/wagers/' + wid + '/wagerDetails').child('wagerSolved').set(true));
 							promises.push(database.ref('/wagers/' + wid + '/wagerDetails').child('wagerSolver').set(uid));
+							promises.push(database.ref('/users/' + uid + '/wagerWins').child(wid).set(wdata.wagerPot));
 							promises.push(awardScore(uid, wdata.wagerPot));
 							promises.push(awardScore(wdata.wagerCreator, Math.floor(wdata.wagerPot/10)));
 							console.log("Correct");
