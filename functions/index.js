@@ -172,6 +172,7 @@ function createChallenge(req, res) {
 	  var database = admin.database().ref('wagers');
 	  var wagerID = database.push().key;
 	  promises.push(database.child(wagerID).set(wagerData));
+	  promises.push(database.child('wagers').child(wagerID).set(admin.database.ServerValue.TIMESTAMP));
 	  database = admin.database().ref('solutions');
 	  promises.push(database.child(wagerID).set(solution));
 

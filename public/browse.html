@@ -60,8 +60,17 @@
 				if (selection === "wager") {
 					//Loads all Wagers
 					type.innerHTML = "Wagers";
-					container.innerHTML = "<h2>Coming Soon</h2>"
-					//TODO
+					database.ref('/wagers/wagers').once("value").then(wagerIDSSnapshot => {
+						wagerIDSSnapshot.forEach(wagerIDSnapshot => {
+							database.ref('/wagers/' + wagerIDSnapshot.key + '/wagerDetails').once('value').then(wagerSnapshot => {
+								var wdata = wagerSnapshot.val();
+								database.ref('/users/' + wdata.wagerCreator).child('name').once('value').then(creatorSnapshot => {
+									var html = "<div class=\"wager\"><a href=\"wager.html?wid=" + wagerIDSnapshot.key + "\"><H3>" + wdata.wagerTitle + "</H3></a><p1><b>" + wdata.wagerDescription + "</b><br></p1><p2>Created By<b> <a style='text-decoration:none;' href='user.html?uid=" + wdata.wagerCreator + "'>" + creatorSnapshot.val() + "</a></b>, Entrants: <b>" + wagerSnapshot.child('wagerEntrants').numChildren() + "</b>, Status: <b>" + getWagerStatus(wdata) + "</b></n>";
+									container.innerHTML = container.innerHTML + html;
+								});
+							});
+						});
+					});
 				} else if (selection === "all" || user === null || user === undefined) {
 					//Loads All Challenges
 					type.innerHTML = "All Challenges"

@@ -40,6 +40,13 @@
 			<div id="createsContainer" style="display:none;">
 				<h3 id="createCount">User has Created 0 Challenges</h3>
 				<div class="userStat" id="userCreates"></div></div>
+			<div id="wagerWinsContainer" style="display:none;">
+				<h3 id="wagerWinCount">User has Won 0 Wagers</h3>
+				<div class="userStat" id="userWagerWins"></div></div>
+			</div>
+			<div id="wagerHostsContainer" style="display:none;">
+				<h3 id="wagerHostCount">User has Hosted 0 Wagers</h3>
+				<div class="userStat" id="userHosts"></div></div>
 		</section>
 		<footer>
 			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
@@ -118,6 +125,38 @@
 							});
 						});
 						document.getElementById("createCount").innerHTML = "User has Created " + numCreates + " Challenges";
+					}
+
+					if (userData.hosted !== undefined) {
+						var hostsContainer = document.getElementById("userHosts");
+						var numHost = 0;
+						userSnapshot.child('hosted').forEach(host => {
+							numHost = numHost + 1;
+							database.ref('/wagers/' + host.key + '/wagerDetails').once('value').then(wagerSnapshot => {
+								var wdata = wagerSnapshot.val();
+								var html = "<div class=\"wager\"><a href=\"wager.html?wid=" + host.key + "\"><H3>" + wdata.wagerTitle + "</H3></a><p1><b>" + wdata.wagerDescription + "</b><br></p1><p2>Created By<b> <a style='text-decoration:none;' href='user.html?uid=" + userSnapshot.key + "'>" + userData.name + "</a></b>, Entrants: <b>" + wagerSnapshot.child('wagerEntrants').numChildren() + "</b>, Status: <b>" + getWagerStatus(wdata) + "</b></n>";
+								hostsContainer.innerHTML = hostsContainer.innerHTML + html;
+							});
+						});
+						document.getElementById("wagerHostCount").innerHTML = "User has Hosted " + numHost + " Wagers"
+						document.getElementById("wagerHostsContainer").style.display = "block";
+					}
+
+					if (userData.wagerWins !== undefined) {
+						var wagerWinsContainer = document.getElementById("userWagerWins");
+						var numWins = 0;
+						userSnapshot.child('wagerWins').forEach(wager => {
+							numWins = numWins + 1;
+							database.ref('/wagers/' + wager.key + '/wagerDetails').once('value').then(wagerSnapshot => {
+								var wdata = wagerSnapshot.val();
+								database.ref('/users/' + wdata.wagerCreator + '/name').once('value').then(creatorSnapshot => {
+									var html = "<div class=\"wager\"><a href=\"wager.html?wid=" + wager.key + "\"><H3>" + wdata.wagerTitle + "</H3></a><p1><b>" + wdata.wagerDescription + "</b><br></p1><p2>Created By<b> <a style='text-decoration:none;' href='user.html?uid=" + wdata.wagerCreator + "'>" + creatorSnapshot.val() + "</a></b>, Entrants: <b>" + wagerSnapshot.child('wagerEntrants').numChildren() + "</b>, Status: <b>" + getWagerStatus(wdata) + "</b></n>";
+									wagerWinsContainer.innerHTML = wagerWinsContainer.innerHTML + html;
+								});
+							});
+						});
+						document.getElementById("wagerWinCount").innerHTML = "User has Won " + numWins + " Wagers"
+						document.getElementById("wagerWinsContainer").style.display = "block";
 					}
 				});
 			}

@@ -23,27 +23,12 @@
 				<td class="nav" onclick="viewProfile()"><h2 class="nav">Account</h2></td>
 				<td class="nav" onclick="signIn()"><h2 id="signIn" class="nav">Sign In</h2></td>
 			</table></nav>
-		<section>
-			<div>
-				<H2>Upload Instructions</H2>
-				<p1>Uploading a Challenge: To upload a challenge you need to fill out the below form.  Chalenges can range in difficulty to suit all users of Cyber Discovery and NEED to be tested before they are uploaded.
-					<ul>
-						<li>Challenge Title:  The challenge title needs to sum up the challenge in as few words as possible whilst still giving the user an idea what the challenge is about.</li>
-						<li>Challenge Description:  A small two line decsription of what the challenge is and what needs to be done.</li>
-						<li>Challenge Content: This is a longer description of the challenge which should contain links to any files needed and describe the end goal of the challenge.</li>
-						<li>Challenge Solution: The solution for the challenge that a user must find to be awarded points.</li></ul>
-						Once all this information is filled in click the submit button and carry on with your day.</p1></div>
-			<div>
-				<H3>Challenge Title</H3>
-				<input id="titleInput" type="text">
-				<H3>Challenge Description</H3>
-				<textarea id="descriptionInput" rows="2"></textarea>
-				<H3>Challenge Content</H3>
-				<textarea id="contentInput" rows="3"></textarea>
-				<H3>Challenge Solution</H3>
-				<input id="solutionInput" type="text">
-				<button id="solutionUpload" onclick="upload()">Upload</button></div></section>
-		<footer>
+		<section></section>
+        <secion>
+            <center><a href="create.html"><h3>Create Challenge</h3></a>
+            <a href="host.html"><h3>Host Wager</h3></a></center>
+        </section>
+        <footer>
 			<a class="footerNavLink" href="https://discord.gg/8h7HU4C" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Discord</H2></a>
  			<a class="footerNavLink" href="https://github.com/Dan-McL/Challenge-Master" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">GitHub</H2></a>
 			<a class="footerNavLink" href="https://twitter.com/CyberDiscUK" rel="noopener noreferrer" target="_blank"><H2 class="footerNav">Official Twitter</H2></a>
@@ -55,44 +40,6 @@
 			firebase.auth().onAuthStateChanged(u => {
 				init();
 				user = u;
-				console.log(user);
 			});
-
-			function upload() {
-				var button = document.getElementById("solutionUpload");
-				button.disabled = true;
-				const title = document.getElementById("titleInput").value;
-				const description = document.getElementById("descriptionInput").value;
-				const content = document.getElementById("contentInput").value;
-				const solution = document.getElementById("solutionInput").value;
-
-				var user = firebase.auth().currentUser;
-				if (user === null) {
-					console.log("Not Signed In");
-					signIn();
-				}else {
-					firebase.auth().currentUser.getIdToken(true).then(function(token) {
-						var req = new XMLHttpRequest();
-						req.onload = function() {
-	      					//On Load redirect to challenge page
-	      					if (req.status == 200) {
-	      						//Success Redirect
-	      						alert("You will be redirected to your challenge page, if the the text from your challenge doesn't load refresh the page");
-	      						document.location.href = "challenge.html?cid=" + req.responseText;
-	      					}else {
-	      						//Error
-	      						alert("Error: Make Sure the entire form is filled out and try again.")
-	      						button.disabled = false;
-	      					}
-	    				}.bind(this);
-	    				req.open('POST', "https://us-central1-challenge-master.cloudfunctions.net/uploadChallenge");
-	    				req.setRequestHeader('Authorization', 'Bearer ' + token);
-	    				req.setRequestHeader('Content-Type', 'application/json');
-						req.setRequestHeader('Type', 'challenge');
-						var rawJson = {"Title":title, "Description":description, "Content":content, "Solution":solution};
-						var json = JSON.stringify(rawJson);
-	    				req.send(json);
-					});
-				}
-			}</script>
+		</script>
 	</body>

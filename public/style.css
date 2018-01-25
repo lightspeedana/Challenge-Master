@@ -170,7 +170,7 @@ td.scoreboardCell {
 /*End*/
 
 /*Browse*/
-div.challenge {
+div.challenge, div.wager {
 	border-bottom: 1px solid black;
 	padding-left: 16px;
 }

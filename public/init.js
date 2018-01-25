@@ -61,3 +61,13 @@ function getParameterByName(name, url) {
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
+
+function getWagerStatus(wdata) {
+    var status = "Populating";
+    if (wdata.wagerSolved === true) {
+        status = "Solved";
+    } else if (wdata.wagerStarted === true) {
+        status = "Started";
+    }
+    return status;
+}
