@@ -42,9 +42,7 @@
 				<H3>Challenge Content</H3>
 				<textarea id="contentInput" rows="3"></textarea>
 				<H3>Challenge Files</H3>
-				<div id="filesContainer" style="border:none">
-					<div style="border:0px"><p1>File 1: </p1><input type="file"></div>
-				</div>
+				<div id="filesContainer" style="border:none"></div>
 				<p1 onclick="addFile()">Add</p1>
 				<H3>Challenge Solution</H3>
 				<input id="solutionInput" type="text">
@@ -104,7 +102,7 @@
 			function addFile() {
 				var container = document.getElementById("filesContainer");
 				if ((container.childElementCount + 1) <= 5) {
-					container.innerHTML = container.innerHTML + "<div style='border:0px'><p1>File " + (container.childElementCount+1) + ": </p1><input type='file'></div>";
+					container.innerHTML = container.innerHTML + "<div style='border:0px'><p1>File " + (container.childElementCount+1) + ": </p1><input id='selectFile" + (container.childElementCount+1) + "' type='file'><p1 id='fileStatus" + container.childElementCount  + "' class='fileStatusIndicator'>Status: <b>Waiting</b></p1></div>"
 				}else {
 					alert("You Can Only Upload 5 Files");
 				}

@@ -181,6 +181,13 @@ div.challenge, div.wager {
 }
 /*End*/
 
+/*Upload*/
+p1.fileStatusIndicator {
+	border-left: 1px solid black;
+	padding-left: 1em;
+}
+/*Upload*/
+
 /*User*/
 div.userStat {
 	height:17.5rem;
