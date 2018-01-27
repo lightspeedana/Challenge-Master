@@ -29,17 +29,23 @@
 				<p1>Uploading a Challenge: To upload a challenge you need to fill out the below form.  Chalenges can range in difficulty to suit all users of Cyber Discovery and NEED to be tested before they are uploaded.
 					<ul>
 						<li>Challenge Title:  The challenge title needs to sum up the challenge in as few words as possible whilst still giving the user an idea what the challenge is about.</li>
-						<li>Challenge Description:  A small two line decsription of what the challenge is and what needs to be done.</li>
-						<li>Challenge Content: This is a longer description of the challenge which should contain links to any files needed and describe the end goal of the challenge.</li>
+						<li>Challenge Description:  A small one line decsription of what the challenge is about.</li>
+						<li>Challenge Content: This is a longer description of the challenge which should contain instructions on how the user will get to the end answer.</li>
+						<li>Challenge Files: Here you should upload any files the players need to solve the challenge.</li>
 						<li>Challenge Solution: The solution for the challenge that a user must find to be awarded points.</li></ul>
 						Once all this information is filled in click the submit button and carry on with your day.</p1></div>
 			<div>
 				<H3>Challenge Title</H3>
 				<input id="titleInput" type="text">
 				<H3>Challenge Description</H3>
-				<textarea id="descriptionInput" rows="2"></textarea>
+				<input id="descriptionInput" rows="2"></input>
 				<H3>Challenge Content</H3>
 				<textarea id="contentInput" rows="3"></textarea>
+				<H3>Challenge Files</H3>
+				<div id="filesContainer" style="border:none">
+					<div style="border:0px"><p1>File 1: </p1><input type="file"></div>
+				</div>
+				<p1 onclick="addFile()">Add</p1>
 				<H3>Challenge Solution</H3>
 				<input id="solutionInput" type="text">
 				<button id="solutionUpload" onclick="upload()">Upload</button></div></section>
@@ -55,7 +61,6 @@
 			firebase.auth().onAuthStateChanged(u => {
 				init();
 				user = u;
-				console.log(user);
 			});
 
 			function upload() {
@@ -94,5 +99,15 @@
 	    				req.send(json);
 					});
 				}
-			}</script>
+			}
+
+			function addFile() {
+				var container = document.getElementById("filesContainer");
+				if ((container.childElementCount + 1) <= 5) {
+					container.innerHTML = container.innerHTML + "<div style='border:0px'><p1>File " + (container.childElementCount+1) + ": </p1><input type='file'></div>";
+				}else {
+					alert("You Can Only Upload 5 Files");
+				}
+			}
+		</script>
 	</body>
