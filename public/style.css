@@ -1,7 +1,17 @@
 /*Document*/
 /*End*/
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
 
 /*General*/
+body{
+  bgcolor: white;
+}
+
+* {
+  color: #01af04;
+  font-family: 'Source Code Pro';
+}
+
 p1 {
 	font-size: 1.3em;
 }
