@@ -39,6 +39,7 @@ p1 {
 
 h2 {
 	font-size: 1.7em;
+    text-decoration: underline;
 }
 
 h3 {
@@ -90,6 +91,7 @@ form {
 h2.title {
 	margin-top: 8px;
 	margin-bottom: 8px;
+    text-decoration: underline;
 }
 /*End*/
 
@@ -125,9 +127,10 @@ a.nav {
 h2.nav {
 	margin: 0px;
 	padding-top: 5px;
-	border-top: 4px solid #8eb200;
 	text-align: center;
+    border-top: 2px solid grey;
     text-shadow: 4px 2px #000;
+    text-decoration: none;
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -138,7 +141,7 @@ h2.nav {
 
 h2.nav:hover {
 	margin-top: 2px;
-	border-top: 2px solid grey;
+    border-top: 4px solid #8eb200;
 }
 
 /*End*/
@@ -151,7 +154,7 @@ a.footerNavLink {
 h2.footerNav {
 	display: inline-block;
   	width: 15%;
- 	border-bottom: 4px solid #8eb200;
+    border-bottom: 2px solid gray;
  	padding: 25px;
  	padding-top: 5px;
  	padding-bottom: 0px;
@@ -165,7 +168,7 @@ h2.footerNav {
 }
 
 h2.footerNav:hover{
-	border-bottom: 2px solid gray;
+	border-bottom: 4px solid #8eb200;
 }
 
 footer {
@@ -179,6 +182,18 @@ footer {
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+}
+
+input{
+    color: black;
+}
+
+textarea{
+    color: black;
+}
+
+buttons{
+    color: black;
 }
 /*End*/
 
