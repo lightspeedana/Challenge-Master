@@ -30,6 +30,12 @@ u.dotted{
 
 * {
   color: #CCFF00;
+=======
+  bgcolor: white;
+}
+
+* {
+  color: #01af04;
   font-family: 'Source Code Pro';
 }
 

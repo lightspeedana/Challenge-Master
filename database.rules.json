@@ -1,0 +1,41 @@
+{
+	"rules": {
+		"users": {
+			".read": true,
+			".write": false
+		},
+		"scores": {
+			".read": true,
+			".write": false,
+			".indexOn": ".value"
+		},
+		"challenges": {
+			".read": true,
+			".write": false
+		},
+		"solutions": {
+			".read": false,
+			".write": false
+		},
+		"wagers": {
+			"wagers": {
+				".read": "true",
+				".write": "false"
+			},
+			"$wager": {
+				"wagerDetails": {
+					".read": "true",
+					".write": "false"
+				},
+				"wagerContent": {
+					".read": "data.parent().child('wagerDetails/wagerStarted').val() === true",
+					".write": "false"
+				},
+				"wagerChat": {
+					".read": "true",
+					".write": "false"
+				}
+			}
+		}
+	}
+}
